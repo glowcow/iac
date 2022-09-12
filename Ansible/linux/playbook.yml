@@ -1,0 +1,11 @@
+---
+- name: AWS Linux configuration
+  hosts: srv
+  become: true
+  roles:
+    - role: docker
+      tags: docker
+    - role: gitlab-runner
+      tags: gitlab-runner
+    - role: npm
+      tags: npm

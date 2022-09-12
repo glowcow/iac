@@ -1,0 +1,33 @@
+---
+- name: AWS self-managed k8s cluster configuration
+  hosts: all
+  become: true
+  roles:
+    - role: node-prepare
+      tags:
+        - node-prepare
+        - cluster-setup
+        - master-restore
+    - role: cluster-setup
+      tags:
+        - cluster-setup
+        - cluster
+    - role: node-add
+      tags:
+        - node-add
+    - role: post-tasks
+      tags:
+        - post-tasks
+        - cluster-setup
+        - node-add
+    - role: master-restore
+      tags:
+        - master-restore
+  vars:
+    - etcdctl_version: "3.4.13"
+    - cluster_version: "1.19.16-00"
+    - docker_version: "5:19.03.15~3-0~ubuntu-focal"
+    - pod_net: "10.100.0.0/16"
+    - svc_net: "10.200.1.0/24"
+    - nginx_ingress: true
+    - metrics_server: true

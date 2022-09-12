@@ -1,0 +1,37 @@
+- name: install kube packages on worker
+  ansible.builtin.apt:
+    pkg:
+    - kubelet={{cluster_version}}
+    - kubeadm={{cluster_version}}
+    - kubectl={{cluster_version}}
+    update_cache: yes
+
+- name: permit kube in iptables on worker (1/1)
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_ports:
+      - "10250"
+      - "30000:32767"
+    jump: ACCEPT
+    comment: "K8s worker node rules"
+
+- name: permit kube in iptables on worker (2/2)
+  ansible.builtin.shell: |
+    iptables-save > /etc/iptables/rules.v4
+
+- name: join worker to cluster (1/2)
+  ansible.builtin.template:
+    src: ./templates/kubeadm-joinconf.j2
+    dest: /tmp/kubeadm-joinconf.yaml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: join worker to cluster (2/2)
+  ansible.builtin.shell: |
+    kubeadm join --config /tmp/kubeadm-joinconf.yaml
+
+- name: disabling updates for cluster core components
+  ansible.builtin.shell: |
+    apt-mark hold docker-ce docker-ce-cli kubeadm kubectl kubelet

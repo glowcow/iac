@@ -1,0 +1,4 @@
+[srv]
+%{ for a, b in zipmap(hostnames, addreses) ~}
+${a} ansible_host=${b} ansible_user=${user}
+%{ endfor ~}

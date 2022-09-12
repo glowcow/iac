@@ -1,0 +1,94 @@
+- name: install kube packages on master
+  ansible.builtin.apt:
+    pkg:
+    - kubelet={{cluster_version}}
+    - kubeadm={{cluster_version}}
+    - kubectl={{cluster_version}}
+    update_cache: yes
+
+- name: permit kube in iptables on master (1/2)
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_ports:
+      - "6443"
+      - "2379:2380"
+      - "10250:10252"
+    jump: ACCEPT
+    comment: "K8s master node rules"
+
+- name: permit kube in iptables on master (2/2)
+  ansible.builtin.shell: |
+    iptables-save > /etc/iptables/rules.v4
+
+
+
+
+
+#
+#- name: init kubernetes cluster on master (1/2)
+#  ansible.builtin.shell: |
+#    kubeadm init --pod-network-cidr={{pod_net}} --service-cidr={{svc_net}} --ignore-preflight-errors="NumCPU"
+#
+#- name: init kubernetes cluster on master (2/2)
+#  ansible.builtin.shell: |
+#    echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/environment
+#
+#- name: install CNI (1/2)
+#  ansible.builtin.template:
+#    src: ./templates/cni-flannel.j2
+#    dest: /tmp/cni-flannel.yml
+#    owner: root
+#    group: root
+#    mode: "0644"
+#  run_once: true
+#
+#- name: install CNI (2/2)
+#  ansible.builtin.shell: |
+#    kubectl apply -f /tmp/cni-flannel.yml
+#  run_once: true
+#
+#- name: install helm
+#  ansible.builtin.shell: |
+#    curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+#    chmod 700 /tmp/get_helm.sh
+#    /tmp/get_helm.sh
+#
+#- name: install nginx ingress (1/3)
+#  ansible.builtin.shell: |
+#    helm repo add nginx-stable https://helm.nginx.com/stable
+#    helm repo update
+#  when: nginx_ingress|bool == true
+#  run_once: true
+#
+#- name: install nginx ingress (2/3)
+#  ansible.builtin.template:
+#    src: ./templates/helm-nginx-values.j2
+#    dest: /tmp/helm-nginx-values.yaml
+#    owner: root
+#    group: root
+#    mode: "0644"
+#  when: nginx_ingress|bool == true
+#  run_once: true
+#
+#- name: install nginx ingress (3/3)
+#  ansible.builtin.shell: |
+#    helm upgrade -i nginx-ingress -n ingress --create-namespace --wait --atomic --version 0.13.2 nginx-stable/nginx-ingress -f /tmp/helm-nginx-values.yaml
+#  when: nginx_ingress|bool == true
+#  run_once: true
+#
+#- name: generate join token
+#  ansible.builtin.shell: |
+#    kubeadm token create --print-join-command
+#  register: kubeadm_join_out
+#  run_once: true
+#
+#- name: set kubeadm_join var
+#  ansible.builtin.set_fact:
+#    kubeadm_join: "{{kubeadm_join_out.stdout}}"
+#  run_once: true
+#
+#- name: disabling updates for cluster core components
+#  ansible.builtin.shell: |
+#    apt-mark hold docker-ce docker-ce-cli kubeadm kubectl kubelet
+#

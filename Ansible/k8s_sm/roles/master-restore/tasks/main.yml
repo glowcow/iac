@@ -1,0 +1,3 @@
+- name: Setup Master nodes tasks
+  include_tasks: "master_node.yml"
+  when: inventory_hostname in groups["master"]

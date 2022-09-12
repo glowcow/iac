@@ -1,0 +1,20 @@
+- name: "Install necessary packages for gitlab runner for Debian"
+  ansible.builtin.apt:
+    name: gnupg
+    update_cache: yes
+    state: latest
+
+- name: "Get gitlab repo script for Debian"
+  ansible.builtin.get_url:
+    url: https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh
+    dest: /tmp/add_gitlab_repo.sh
+    mode: '0770'
+
+- name: "Add gitlab repo for Debian"
+  ansible.builtin.shell: /tmp/add_gitlab_repo.sh
+
+- name: "Install gitlab runner"
+  ansible.builtin.apt:
+    name: gitlab-runner
+    update_cache: yes
+    state: latest

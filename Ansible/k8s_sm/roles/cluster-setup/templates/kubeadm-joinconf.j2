@@ -1,0 +1,9 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: JoinConfiguration
+discovery:
+  bootstrapToken:
+    token: {{hostvars['k8s-aws-master0']['kubeadm_join'].split(' ')[4] | lower}}
+    apiServerEndpoint: "{{hostvars['k8s-aws-master0'].ansible_default_ipv4.address}}:6443"
+    caCertHashes: ["{{hostvars['k8s-aws-master0']['kubeadm_join'].split(' ')[10] | lower}}"]
+nodeRegistration:
+  name: {{inventory_hostname}}

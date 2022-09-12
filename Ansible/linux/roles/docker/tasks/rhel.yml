@@ -1,0 +1,19 @@
+- name: "Install necessary packages for Docker for RHEL"
+  ansible.builtin.yum:
+    name: yum-utils
+    state: latest
+
+- name: "Add Docker repository for RHEL"
+  ansible.builtin.yum_repository:
+    name: docker
+    description: Docker official repo
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: "Install Docker for RHEL"
+  ansible.builtin.yum:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: latest

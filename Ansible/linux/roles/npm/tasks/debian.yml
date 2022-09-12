@@ -1,0 +1,8 @@
+- name: "Install necessary packages for NPM (Debian)"
+  ansible.builtin.apt:
+    name: 
+      - npm
+      - zip
+      - nginx
+    state: latest
+    update_cache: yes

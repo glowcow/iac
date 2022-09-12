@@ -1,0 +1,73 @@
+stages:
+  - infra_create
+  - infra_config
+  - infra_destroy
+
+create infrastructure:
+  stage: infra_create
+  image: 
+    name: hashicorp/terraform:1.2.9
+    entrypoint: [""]
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ "master" && $TF
+    - if: $CI_COMMIT_REF_NAME =~ "dev" && $TF
+    - when: never
+  before_script:
+    - mkdir -p ~/.ssh ~/key
+    - echo "$SSH_ED25519_PRIV" | base64 -d > ~/.ssh/id_ed25519
+    - echo "$SSH_ED25519_PUB" | base64 -d > ~/.ssh/id_ed25519.pub
+    - cd Terraform/$TF
+    - pwd
+  script:
+    - terraform init
+    - terraform apply -auto-approve
+  artifacts:
+    name: "$CI_JOB_NAME"
+    paths:
+      - Ansible/inventory.ini
+
+configure infrastructure:
+  stage: infra_config
+  image: 
+    name: glowcow/ansible:2.13.3
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ "master" && $ANS != null && $TAGS != null
+    - if: $CI_COMMIT_REF_NAME =~ "dev" && $ANS != null && $TAGS != null
+    - when: never
+  before_script:
+    - echo "$SSH_ED25519_PRIV" | base64 -d > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+    - cd Ansible/$ANS
+    - pwd
+    - ansible --version
+  script:
+    - ansible-playbook playbook.yml --tags "$TAGS"
+  needs:
+    - job: create infrastructure
+      artifacts: true
+  artifacts:
+    name: "$CI_JOB_NAME"
+    paths:
+      - Ansible/$ANS/*.log
+
+destroy infrastructure:
+  stage: infra_destroy
+  image: 
+    name: hashicorp/terraform:1.2.9
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ "master" && $TF
+      when: manual
+    - if: $CI_COMMIT_REF_NAME =~ "dev" && $TF
+      when: manual
+    - when: never
+  before_script:
+    - mkdir -p ~/.ssh ~/key
+    - echo "$SSH_ED25519_PRIV" | base64 -d > ~/.ssh/id_ed25519
+    - echo "$SSH_ED25519_PUB" | base64 -d > ~/.ssh/id_ed25519.pub
+    - cd Terraform/$TF
+    - pwd
+  script:
+    - terraform init
+    - terraform destroy -auto-approve
