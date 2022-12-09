@@ -6,7 +6,7 @@ stages:
 create infrastructure:
   stage: infra_create
   image: 
-    name: hashicorp/terraform:1.2.9
+    name: hashicorp/terraform:1.3.6
     entrypoint: [""]
   allow_failure: true
   rules:
@@ -30,7 +30,7 @@ create infrastructure:
 configure infrastructure:
   stage: infra_config
   image: 
-    name: glowcow/ansible:2.13.3
+    name: glowcow/ansible:2.13.7
   allow_failure: true
   rules:
     - if: $CI_COMMIT_REF_NAME =~ "master" && $ANS != null && $TAGS != null
@@ -54,7 +54,7 @@ configure infrastructure:
 destroy infrastructure:
   stage: infra_destroy
   image: 
-    name: hashicorp/terraform:1.2.9
+    name: hashicorp/terraform:1.3.6
     entrypoint: [""]
   rules:
     - if: $CI_COMMIT_REF_NAME =~ "master" && $TF
