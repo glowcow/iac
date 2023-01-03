@@ -4,6 +4,6 @@ discovery:
   bootstrapToken:
     token: {{hostvars['k8s-aws-master0']['kubeadm_join'].split(' ')[4] | lower}}
     apiServerEndpoint: "{{hostvars['k8s-aws-master0'].ansible_default_ipv4.address}}:6443"
-    caCertHashes: ["{{hostvars['k8s-aws-master0']['kubeadm_join'].split(' ')[10] | lower}}"]
+    caCertHashes: ["{{hostvars['k8s-aws-master0']['kubeadm_join'].split(' ')[6] | lower}}"]
 nodeRegistration:
   name: {{inventory_hostname}}
