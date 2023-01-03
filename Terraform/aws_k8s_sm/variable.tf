@@ -21,7 +21,7 @@ variable "worker_instance_type" {
 variable "ami_image" {
   description = "AMI images id Ubuntu 22.04 (eu-west-1)"
   type        = string
-  default     = "ami-02142ceceb3933ff5"
+  default     = "ami-026e72e4e468afa7b"
 }
 variable "def_user" {
   description = "Default username of Ubuntu 20.04"
