@@ -1,0 +1,13 @@
+- name: labeling worker nodes (1/2)
+  ansible.builtin.template:
+    src: ./templates/labeling-nodes-sh.j2
+    dest: /tmp/labeling-nodes.sh
+    owner: root
+    group: root
+    mode: "0644"
+  run_once: true
+
+- name: labeling worker nodes (2/2)
+  ansible.builtin.shell: |
+    bash /tmp/labeling-nodes.sh
+  run_once: true

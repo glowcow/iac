@@ -1,0 +1,3 @@
+- name: Setup cluster post tasks
+  include_tasks: "post_tasks.yml"
+  when: inventory_hostname in groups["master"]

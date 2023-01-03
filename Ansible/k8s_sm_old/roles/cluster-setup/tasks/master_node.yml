@@ -6,6 +6,21 @@
     - kubectl={{cluster_version}}
     update_cache: yes
 
+- name: permit kube in iptables on master (1/2)
+  ansible.builtin.iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_ports:
+      - "6443"
+      - "2379:2380"
+      - "10250:10252"
+    jump: ACCEPT
+    comment: "K8s master node rules"
+
+- name: permit kube in iptables on master (2/2)
+  ansible.builtin.shell: |
+    iptables-save > /etc/iptables/rules.v4
+
 - name: init kubernetes cluster on master (1/2)
   ansible.builtin.shell: |
     kubeadm init --pod-network-cidr={{pod_net}} --service-cidr={{svc_net}} --ignore-preflight-errors="NumCPU"
@@ -100,4 +115,4 @@
 
 - name: disabling updates for cluster core components
   ansible.builtin.shell: |
-    apt-mark hold containerd.io kubeadm kubectl kubelet
+    apt-mark hold docker-ce docker-ce-cli kubeadm kubectl kubelet

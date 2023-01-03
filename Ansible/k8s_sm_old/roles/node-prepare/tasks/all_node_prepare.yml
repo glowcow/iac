@@ -21,8 +21,7 @@
     - curl
     - apt-transport-https
     - git
-    - gnupg2
-    - software-properties-common
+    - iptables-persistent
     update_cache: yes
     state: latest
 
@@ -60,35 +59,47 @@
   ansible.builtin.shell: |
     sysctl --system
 
-- name: add docker repo for Containerd (1/2)
+- name: install Docker (1/6)
+  ansible.builtin.apt:
+    pkg:
+    - ca-certificates
+    - gnupg
+    - lsb-release
+    update_cache: yes
+    state: latest
+
+- name: install Docker (2/6)
   ansible.builtin.shell: |
     mkdir -p /etc/apt/keyrings
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
-- name: add Docker repo for Containerd (2/2)
+- name: install Docker (3/6)
   ansible.builtin.shell: |
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-- name: install Containerd (1/3)
+- name: install Docker (4/6)
   ansible.builtin.apt:
     pkg:
-    - containerd.io={{containerd_version}}
+    - docker-ce={{docker_version}}
+    - docker-ce-cli={{docker_version}}
+    - containerd.io
+    - docker-compose-plugin
     update_cache: yes
 
-- name: install Containerd (2/3)
+- name: install Docker (5/6)
   ansible.builtin.template:
-    src: ./templates/contd-conf.j2
-    dest: /etc/containerd/config.toml
+    src: ./templates/docker-daemon-json.j2
+    dest: /etc/docker/daemon.json
     owner: root
     group: root
     mode: "0644"
 
-- name: install Containerd (3/3)
+- name: install Docker (6/6)
   ansible.builtin.systemd:
     state: restarted
-    name: containerd
+    name: docker
 
-- name: add google cloud repo
+- name: adding google cloud repo
   ansible.builtin.shell: |
     sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
