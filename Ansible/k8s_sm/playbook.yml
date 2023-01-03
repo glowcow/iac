@@ -7,11 +7,9 @@
       tags:
         - node-prepare
         - cluster-setup
-        - master-restore
     - role: cluster-setup
       tags:
         - cluster-setup
-        - cluster
     - role: post-tasks
       tags:
         - post-tasks
