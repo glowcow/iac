@@ -1,9 +1,9 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
-metadata: 
-  name: backup-etcd 
+metadata:
+  name: backup-etcd
   namespace: kube-system
-spec: 
+spec:
 #  activeDeadlineSeconds: 100
   schedule: "0 10 * * *"
   successfulJobsHistoryLimit: 3
