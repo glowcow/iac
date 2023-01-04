@@ -13,7 +13,7 @@ spec:
       template:
         spec:
           nodeSelector:
-            node-role.kubernetes.io/master: ""
+            node-role.kubernetes.io/control-plane: ""
           tolerations:
           - operator: Exists
             effect: NoSchedule

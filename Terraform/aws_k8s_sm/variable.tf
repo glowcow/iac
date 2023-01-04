@@ -46,12 +46,17 @@ variable "aws_region" {
 variable "aws_prv_subnet" {
   description = "AWS private subnet"
   type        = string
-  default     = "172.16.16.0/25"
+  default     = "172.16.17.0/24"
+}
+variable "aws_pub_subnet" {
+  description = "AWS public subnet"
+  type        = string
+  default     = "172.16.16.0/24"
 }
 variable "aws_vpc_subnet" {
   description = "AWS VPC subnet"
   type        = string
-  default     = "172.16.16.0/24"
+  default     = "172.16.16.0/20"
 }
 variable "master_priv_ip" {
   description = "Master node private ip"

@@ -8,7 +8,7 @@ resource "aws_instance" "k8s-master-aws" {
   ami = var.ami_image
   instance_type = var.master_instance_type
   associate_public_ip_address = true
-  subnet_id = aws_subnet.public.id
+  subnet_id = aws_subnet.master_sub.id
   private_ip = var.master_priv_ip
   key_name = aws_key_pair.tf-k8s-sm.key_name
   vpc_security_group_ids = [aws_security_group.k8s-master-sg.id]
@@ -39,8 +39,8 @@ resource "aws_instance" "k8s-worker-aws" {
   count = var.worker_ec2_count
   ami = var.ami_image
   instance_type = var.worker_instance_type
-  associate_public_ip_address = true
-  subnet_id = aws_subnet.public.id
+  associate_public_ip_address = false
+  subnet_id = aws_subnet.worker_sub.id
   key_name = aws_key_pair.tf-k8s-sm.key_name
   vpc_security_group_ids = [aws_security_group.k8s-worker-sg.id]
   tags = {
@@ -48,7 +48,8 @@ resource "aws_instance" "k8s-worker-aws" {
     }
   connection {
       type        = "ssh"
-      host        = self.public_ip
+      bastion_host = aws_instance.k8s-master-aws.0.public_ip
+      host        = self.private_ip
       user        = var.def_user
       private_key = file(var.pvt_key)
       timeout     = "1m"

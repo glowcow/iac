@@ -37,7 +37,14 @@ output "worker_ipv4_address_public" {
   description = "public IPv4 addresses assigned to the EC2, if applicable"
   value       = join(", ", aws_instance.k8s-worker-aws.*.public_ip)
 }
-
+output "nat_gateway_ip_ext" {
+  description = "public IPv4 addresses assigned to NAT-GW, if applicable"
+  value = aws_eip.nat-gw-eip.public_ip
+}
+output "nat_gateway_ip_int" {
+  description = "private IPv4 addresses assigned to NAT-GW, if applicable"
+  value = aws_eip.nat-gw-eip.private_ip
+}
 output "region" {
   description = "regions of EC2"
   value       = var.aws_region

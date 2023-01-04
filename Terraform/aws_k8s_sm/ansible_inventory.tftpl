@@ -7,3 +7,6 @@ ${a} ansible_host=${b} ansible_user=${user}
 %{ for a, b in zipmap(host_worker, addr_worker) ~}
 ${a} ansible_host=${b} ansible_user=${user}
 %{ endfor ~}
+
+[worker:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -p 22 -W %h:%p -q ${user}@${bastion}"'
