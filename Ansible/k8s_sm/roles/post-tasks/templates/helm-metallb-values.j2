@@ -288,7 +288,8 @@ speaker:
     limits:
       cpu: 100m
       memory: 100Mi
-  nodeSelector: {}
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""
   tolerations:
     - operator: Exists
       effect: NoSchedule
