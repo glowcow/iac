@@ -824,7 +824,9 @@ affinity: {}
 
 nodeSelector:
   node-role.kubernetes.io/control-plane: ""
-tolerations: []
+tolerations:
+  - operator: Exists
+    effect: NoSchedule
 topologySpreadConstraints: []
 # # This example topologySpreadConstraints forces the scheduler to put traefik pods
 # # on nodes where no other traefik pods are scheduled.
