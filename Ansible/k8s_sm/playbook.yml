@@ -22,4 +22,5 @@
     - pod_net: "10.100.0.0/16"
     - svc_net: "10.200.1.0/24"
     - traefik_ingress: true
+    - metallb: true
     - metrics_server: true
