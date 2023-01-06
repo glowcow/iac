@@ -21,5 +21,5 @@
     - containerd_version: "1.6.14-1"
     - pod_net: "10.100.0.0/16"
     - svc_net: "10.200.1.0/24"
-    - nginx_ingress: true
+    - traefik_ingress: true
     - metrics_server: true

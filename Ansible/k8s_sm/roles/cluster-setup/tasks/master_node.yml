@@ -34,27 +34,27 @@
     chmod 700 /tmp/get_helm.sh
     /tmp/get_helm.sh
 
-- name: install nginx ingress (1/3)
+- name: install traefik ingress (1/3)
   ansible.builtin.shell: |
-    helm repo add nginx-stable https://helm.nginx.com/stable
+    helm repo add traefik https://traefik.github.io/charts
     helm repo update
-  when: nginx_ingress|bool == true
+  when: traefik_ingress|bool == true
   run_once: true
 
-- name: install nginx ingress (2/3)
+- name: install traefik ingress (2/3)
   ansible.builtin.template:
-    src: ./templates/helm-nginx-values.j2
-    dest: /tmp/helm-nginx-values.yaml
+    src: ./templates/helm-traefik-values.j2
+    dest: /tmp/helm-traefik-values.yaml
     owner: root
     group: root
     mode: "0644"
-  when: nginx_ingress|bool == true
+  when: traefik_ingress|bool == true
   run_once: true
 
-- name: install nginx ingress (3/3)
+- name: install traefik ingress (3/3)
   ansible.builtin.shell: |
-    helm upgrade -i nginx-ingress -n ingress --create-namespace --wait --atomic --version 0.13.2 nginx-stable/nginx-ingress -f /tmp/helm-nginx-values.yaml
-  when: nginx_ingress|bool == true
+    helm upgrade -i traefik-ingress -n ingress --create-namespace --wait --atomic --version 20.8.0 traefik/traefik -f /tmp/helm-traefik-values.yaml
+  when: traefik_ingress|bool == true
   run_once: true
 
 - name: install metrics-server (1/2)
