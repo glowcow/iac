@@ -222,15 +222,15 @@ controller:
     # nobody
     runAsUser: 65534
     fsGroup: 65534
-  resources: {}
-    # limits:
-      # cpu: 100m
-      # memory: 100Mi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
   nodeSelector:
     node-role.kubernetes.io/control-plane: ""
   tolerations:
     - operator: Exists
-    effect: NoSchedule
+      effect: NoSchedule
   priorityClassName: ""
   runtimeClassName: ""
   affinity: {}
@@ -284,10 +284,10 @@ speaker:
   ## By default secretName: {{ "metallb.fullname" }}-memberlist
   ##
   # secretName:
-  resources: {}
-    # limits:
-      # cpu: 100m
-      # memory: 100Mi
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
   nodeSelector: {}
   tolerations:
     - operator: Exists
