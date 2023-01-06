@@ -19,14 +19,14 @@
     /tmp/get_helm.sh
   run_once: true
 
-- name: install metallb load balancer (1/3)
+- name: install metallb load balancer (1/5)
   ansible.builtin.shell: |
     helm repo add metallb https://metallb.github.io/metallb
     helm repo update
   when: metallb|bool == true
   run_once: true
 
-- name: install metallb load balancer (2/3)
+- name: install metallb load balancer (2/5)
   ansible.builtin.template:
     src: ./templates/helm-metallb-values.j2
     dest: /tmp/helm-metallb-values.yaml
@@ -36,9 +36,25 @@
   when: metallb|bool == true
   run_once: true
 
-- name: install metallb load balancer (3/3)
+- name: install metallb load balancer (3/5)
   ansible.builtin.shell: |
     helm upgrade -i metallb -n metallb-system --create-namespace --wait --atomic --version 0.13.7 metallb/metallb -f /tmp/helm-metallb-values.yaml
+  when: metallb|bool == true
+  run_once: true
+
+- name: install metallb load balancer (4/5)
+  ansible.builtin.template:
+    src: ./templates/metallb-pool.j2
+    dest: /tmp/metallb-pool.yml
+    owner: root
+    group: root
+    mode: "0644"
+  when: metallb|bool == true
+  run_once: true
+
+- name: install metallb load balancer (5/5)
+  ansible.builtin.shell: |
+    kubectl apply -f /tmp/metallb-pool.yml
   when: metallb|bool == true
   run_once: true
 

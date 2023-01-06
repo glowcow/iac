@@ -11,7 +11,7 @@ variable "ec2_name" {
 variable "master_instance_type" {
   description = "CPU and RAM of the AWS EC2"
   type        = string
-  default     = "t2.small"
+  default     = "t2.medium"
 }
 variable "worker_instance_type" {
   description = "CPU and RAM of the AWS EC2"
