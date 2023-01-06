@@ -2,7 +2,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: flannel-system
+  name: cni-flannel-system
   labels:
     pod-security.kubernetes.io/enforce: privileged
 ---
@@ -43,19 +43,19 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: flannel
-  namespace: kube-flannel
+  namespace: cni-flannel-system
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: flannel
-  namespace: kube-flannel
+  namespace: cni-flannel-system
 ---
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: kube-flannel-cfg
-  namespace: kube-flannel
+  namespace: cni-flannel-system
   labels:
     tier: node
     app: flannel
@@ -92,7 +92,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: kube-flannel-ds
-  namespace: kube-flannel
+  namespace: cni-flannel-system
   labels:
     tier: node
     app: flannel
