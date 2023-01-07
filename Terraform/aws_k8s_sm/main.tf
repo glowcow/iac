@@ -24,14 +24,14 @@ resource "aws_ebs_volume" "ebs_volume_worker" {
 resource "aws_volume_attachment" "volume_attachement_master" {
   count       = var.master_ec2_count
   volume_id   = "${aws_ebs_volume.ebs_volume_master.*.id[count.index]}"
-  device_name = "/dev/sda"
+  device_name = "/dev/sdf"
   instance_id = "${element(aws_instance.k8s-master-aws.*.id, count.index)}"
 }
 
 resource "aws_volume_attachment" "volume_attachement_worker" {
   count       = var.worker_ec2_count
   volume_id   = "${aws_ebs_volume.ebs_volume_worker.*.id[count.index]}"
-  device_name = "/dev/sda"
+  device_name = "/dev/sdf"
   instance_id = "${element(aws_instance.k8s-worker-aws.*.id, count.index)}"
 }
 
