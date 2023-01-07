@@ -24,6 +24,7 @@
     - gnupg2
     - software-properties-common
     - jq
+    - nfs-common
     update_cache: yes
     state: latest
 
