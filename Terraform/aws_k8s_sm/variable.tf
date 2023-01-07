@@ -38,6 +38,11 @@ variable "master_ec2_count" {
   type        = number
   default     = 1
 }
+variable "ebs_size" {
+  description = "Size in Gb of the AWS EBS Volume"
+  type        = number
+  default     = 5
+}
 variable "aws_region" {
   description = "AWS region"
   type        = string

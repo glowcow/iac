@@ -31,6 +31,7 @@
 - name: install necessary packages (2/2)
   ansible.builtin.systemd:
     name: iscsid
+    state: started
     enabled: yes
     masked: no
 
