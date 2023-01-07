@@ -97,6 +97,22 @@
   when: metrics_server|bool == true
   run_once: true
 
+- name: install lonhghorn (1/2)
+  ansible.builtin.template:
+    src: ./templates/helm-longhorn-values.j2
+    dest: /tmp/helm-longhorn-values.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  when: lonhghorn|bool == true
+  run_once: true
+
+#- name: install lonhghorn (2/2)
+#  ansible.builtin.shell: |
+#    helm upgrade -i lonhghorn -n lonhghorn-system --create-namespace --wait --atomic --version 1.4.0 lonhghorn/lonhghorn -f /tmp/helm-lonhghorn-values.yaml
+#  when: lonhghorn|bool == true
+#  run_once: true
+
 - name: apply etcd backup cronjob (1/2)
   ansible.builtin.template:
     src: ./templates/cj-etcd-backup.j2
