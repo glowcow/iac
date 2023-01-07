@@ -23,5 +23,5 @@
     - svc_net: "10.200.1.0/24"
     - traefik_ingress: true
     - metallb: true
-    - lonhghorn: true
+    - longhorn: true
     - metrics_server: true

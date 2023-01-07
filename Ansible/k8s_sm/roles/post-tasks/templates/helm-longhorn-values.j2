@@ -150,7 +150,7 @@ defaultSettings:
   kubernetesClusterAutoscalerEnabled: ~
   orphanAutoDeletion: ~
   storageNetwork: ~
-  deletingConfirmationFlag: ~
+  deletingConfirmationFlag: true
   engineReplicaTimeout: ~
   snapshotDataIntegrity: ~
   snapshotDataIntegrityImmediateCheckAfterSnapshotCreation: ~
@@ -292,7 +292,7 @@ ingress:
 
   ## If ingress is enabled you can set the default ingress path
   ## then you can access the UI by using the following full path {{host}}+{{path}}
-  path: /
+  path: /lh
 
   ## Ingress annotations done as key:value pairs
   ## If you're using kube-lego, you will want to add:
