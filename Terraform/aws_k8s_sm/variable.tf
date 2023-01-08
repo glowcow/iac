@@ -31,7 +31,7 @@ variable "def_user" {
 variable "worker_ec2_count" {
   description = "Count of the AWS EC2"
   type        = number
-  default     = 2
+  default     = 3
 }
 variable "master_ec2_count" {
   description = "Count of the AWS EC2"

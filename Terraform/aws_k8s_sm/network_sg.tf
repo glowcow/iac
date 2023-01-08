@@ -121,6 +121,12 @@ resource "aws_security_group" "k8s-worker-sg" {
     protocol    = -1
     cidr_blocks = [aws_subnet.master_sub.cidr_block]
   }
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = [aws_subnet.worker_sub.cidr_block]
+  }
   egress {
     from_port   = 0
     to_port     = 0

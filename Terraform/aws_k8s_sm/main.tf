@@ -3,14 +3,14 @@ resource "aws_key_pair" "tf-k8s-sm" {
   public_key = file("~/.ssh/id_ed25519.pub")
 }
 
-resource "aws_ebs_volume" "ebs_volume_master" {
-  count             = var.master_ec2_count
-  availability_zone = var.availability_zones
-  size              = var.ebs_size
-  tags = {
-      Name = "ebs-master${count.index}",
-    }
-}
+#resource "aws_ebs_volume" "ebs_volume_master" {
+#  count             = var.master_ec2_count
+#  availability_zone = var.availability_zones
+#  size              = var.ebs_size
+#  tags = {
+#      Name = "ebs-master${count.index}",
+#    }
+#}
 
 resource "aws_ebs_volume" "ebs_volume_worker" {
   count             = var.worker_ec2_count
@@ -21,12 +21,12 @@ resource "aws_ebs_volume" "ebs_volume_worker" {
     }
 }
 
-resource "aws_volume_attachment" "volume_attachement_master" {
-  count       = var.master_ec2_count
-  volume_id   = "${aws_ebs_volume.ebs_volume_master.*.id[count.index]}"
-  device_name = "/dev/sdf"
-  instance_id = "${element(aws_instance.k8s-master-aws.*.id, count.index)}"
-}
+#resource "aws_volume_attachment" "volume_attachement_master" {
+#  count       = var.master_ec2_count
+#  volume_id   = "${aws_ebs_volume.ebs_volume_master.*.id[count.index]}"
+#  device_name = "/dev/sdf"
+#  instance_id = "${element(aws_instance.k8s-master-aws.*.id, count.index)}"
+#}
 
 resource "aws_volume_attachment" "volume_attachement_worker" {
   count       = var.worker_ec2_count
