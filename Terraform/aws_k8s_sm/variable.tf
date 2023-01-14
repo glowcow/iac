@@ -3,6 +3,10 @@ variable "pvt_key" {
   type        = string
   default     = "~/.ssh/id_ed25519"
 }
+variable "gd_sso" {
+  description = "GoDaddy API key & secret"
+  type        = string
+}
 variable "ec2_name" {
   description = "Name of the AWS EC2"
   type        = string
@@ -31,7 +35,7 @@ variable "def_user" {
 variable "worker_ec2_count" {
   description = "Count of the AWS EC2"
   type        = number
-  default     = 3
+  default     = 2
 }
 variable "master_ec2_count" {
   description = "Count of the AWS EC2"

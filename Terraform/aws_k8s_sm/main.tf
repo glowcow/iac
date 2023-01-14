@@ -65,6 +65,16 @@ resource "aws_instance" "k8s-master-aws" {
       "sudo chmod 600 /root/.ssh/id_ed25519",
     ]
   }
+  provisioner "local-exec" {
+    command = <<EOT
+      curl -X PUT "https://api.godaddy.com/v1/domains/glowcow.xyz/records/A/*.k8s" \
+        -H "accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: sso-key ${var.gd_sso}" \
+        -d '[{"data":"${self.public_ip}","port":1,"priority":1,"protocol":"string","service":"string","ttl":600,"weight":1}]'
+      EOT
+    sensitive = true
+  }
 }
 
 resource "aws_instance" "k8s-worker-aws" {
