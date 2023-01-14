@@ -1,6 +1,6 @@
 variables:
-  TF_IMG: hashicorp/terraform:1.3.7
-  ANS_IMG: glowcow/ansible:2.13.7
+  TF_IMG: glowcow/terraform:1.3.7
+  ANS_IMG: glowcow/ansible:2.14.1
 
 stages:
   - infra_create
@@ -23,6 +23,7 @@ create infrastructure:
     - echo "$SSH_ED25519_PUB" | base64 -d > ~/.ssh/id_ed25519.pub
     - cd Terraform/$TF
     - pwd
+    - terraform --version
   script:
     - terraform init
     - terraform apply -auto-approve
@@ -72,6 +73,7 @@ destroy infrastructure:
     - echo "$SSH_ED25519_PUB" | base64 -d > ~/.ssh/id_ed25519.pub
     - cd Terraform/$TF
     - pwd
+    - terraform --version
   script:
     - terraform init
     - terraform destroy -auto-approve
