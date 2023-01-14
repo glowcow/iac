@@ -2,10 +2,12 @@ variable "pvt_key" {
   description = "SSH private key to access EC2"
   type        = string
   default     = "~/.ssh/id_ed25519"
+  sensitive   = true
 }
 variable "gd_sso" {
   description = "GoDaddy API key & secret"
   type        = string
+  sensitive   = true
 }
 variable "ec2_name" {
   description = "Name of the AWS EC2"

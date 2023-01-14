@@ -73,7 +73,6 @@ resource "aws_instance" "k8s-master-aws" {
         -H "Authorization: sso-key ${var.gd_sso}" \
         -d '[{"data":"${self.public_ip}","port":1,"priority":1,"protocol":"string","service":"string","ttl":600,"weight":1}]'
       EOT
-    sensitive = true
   }
 }
 
