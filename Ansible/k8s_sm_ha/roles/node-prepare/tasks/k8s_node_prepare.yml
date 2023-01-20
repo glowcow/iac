@@ -23,6 +23,7 @@
     - git
     - gnupg2
     - software-properties-common
+    - sshpass
     update_cache: yes
     state: latest
 

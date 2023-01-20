@@ -15,24 +15,44 @@ variable "ec2_name" {
   default     = "k8s-aws"
 }
 variable "master_instance_type" {
-  description = "CPU and RAM of the AWS EC2"
+  description = "CPU and RAM of the AWS EC2 for master"
   type        = string
   default     = "t2.medium"
 }
 variable "master_ec2_count" {
-  description = "Count of the AWS EC2"
+  description = "Count of the AWS EC2 for master"
   type        = number
-  default     = 1
+  default     = 3
 }
 variable "worker_instance_type" {
-  description = "CPU and RAM of the AWS EC2"
+  description = "CPU and RAM of the AWS EC2 for worker"
   type        = string
   default     = "t2.medium"
 }
 variable "worker_ec2_count" {
-  description = "Count of the AWS EC2"
+  description = "Count of the AWS EC2 for worker"
   type        = number
   default     = 2
+}
+variable "etcd_instance_type" {
+  description = "CPU and RAM of the AWS EC2 for etcd"
+  type        = string
+  default     = "t2.medium"
+}
+variable "etcd_ec2_count" {
+  description = "Count of the AWS EC2 for etcd"
+  type        = number
+  default     = 3
+}
+variable "hap_instance_type" {
+  description = "CPU and RAM of the AWS EC2 for haproxy"
+  type        = string
+  default     = "t2.micro"
+}
+variable "hap_ec2_count" {
+  description = "Count of the AWS EC2 for haproxy"
+  type        = number
+  default     = 1
 }
 variable "ami_image" {
   description = "AMI images id Ubuntu 22.04 (eu-west-1)"
@@ -44,20 +64,10 @@ variable "def_user" {
   type        = string
   default     = "ubuntu"
 }
-variable "ebs_size" {
-  description = "Size in Gb of the AWS EBS Volume"
-  type        = number
-  default     = 5
-}
 variable "aws_region" {
   description = "AWS region"
   type        = string
   default     = "eu-west-1"
-}
-variable "aws_prv_subnet" {
-  description = "AWS private subnet"
-  type        = string
-  default     = "172.16.17.0/24"
 }
 variable "aws_pub_subnet" {
   description = "AWS public subnet"
@@ -68,11 +78,6 @@ variable "aws_vpc_subnet" {
   description = "AWS VPC subnet"
   type        = string
   default     = "172.16.16.0/20"
-}
-variable "master_priv_ip" {
-  description = "Master node private ip"
-  type        = string
-  default     = "172.16.16.111"
 }
 variable "availability_zones" {
   description = "Availability zones"

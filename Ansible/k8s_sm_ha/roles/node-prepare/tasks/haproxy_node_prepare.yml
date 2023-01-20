@@ -1,0 +1,49 @@
+- name: set hostname
+  ansible.builtin.shell: "hostnamectl set-hostname {{inventory_hostname}}"
+
+- name: change /etc/hosts
+  ansible.builtin.template:
+    src: ./templates/etc-host.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: update & upgrade
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: yes
+    state: latest
+
+- name: install necessary packages
+  ansible.builtin.apt:
+    pkg:
+    - haproxy
+    update_cache: yes
+    state: latest
+
+- name: disable SWAP (1/2)
+  ansible.builtin.shell: swapoff -a
+
+- name: disable SWAP (2/2)
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: disabling updates for cluster core components
+  ansible.builtin.shell: |
+    apt-mark hold haproxy
+
+#- name: rebooting all nodes for applying updates
+#  ansible.builtin.shell: |
+#    sleep 5 && shutdown -r now
+#  async: 1
+#  poll: 0
+#
+#- name: waiting for the boot
+#  wait_for_connection:
+#    connect_timeout: 10
+#    sleep: 5
+#    delay: 5
+#    timeout: 300

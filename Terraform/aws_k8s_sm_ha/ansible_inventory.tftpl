@@ -1,0 +1,27 @@
+[haproxy]
+%{ for a, b in zipmap(host_hap, addr_hap) ~}
+${a} ansible_host=${b} ansible_user=${user}
+%{ endfor ~}
+
+[master]
+%{ for a, b in zipmap(host_master, addr_master) ~}
+${a} ansible_host=${b} ansible_user=${user}
+%{ endfor ~}
+
+[etcd]
+%{ for a, b in zipmap(host_etcd, addr_etcd) ~}
+${a} ansible_host=${b} ansible_user=${user}
+%{ endfor ~}
+
+[worker]
+%{ for a, b in zipmap(host_worker, addr_worker) ~}
+${a} ansible_host=${b} ansible_user=${user}
+%{ endfor ~}
+
+[bastion:children]
+master
+etcd
+worker
+
+[bastion:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -p 22 -W %h:%p -q ${user}@${bastion}"'

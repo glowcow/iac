@@ -1,0 +1,48 @@
+# Update HOST1, HOST2 and HOST3 with the IPs of your hosts
+{% for host in groups['etcd'] %}
+export HOST{{loop.index}}={{hostvars[host].ansible_default_ipv4.address}}
+{% endfor %}
+
+# Update NAME1, NAME2 and NAME3 with the hostnames of your hosts
+{% for host in groups['etcd'] %}
+export NAME{{loop.index}}={{hostvars[host].inventory_hostname}}
+{% endfor %}
+
+{% raw %}
+# Create temp directories to store files that will end up on other hosts
+mkdir -p /tmp/${HOST1}/ /tmp/${HOST2}/ /tmp/${HOST3}/
+
+HOSTS=(${HOST1} ${HOST2} ${HOST3})
+NAMES=(${NAME1} ${NAME2} ${NAME3})
+
+for i in "${!HOSTS[@]}"; do
+HOST=${HOSTS[$i]}
+NAME=${NAMES[$i]}
+cat << EOF > /tmp/${HOST}/kubeadmcfg.yaml
+---
+apiVersion: "kubeadm.k8s.io/v1beta3"
+kind: InitConfiguration
+nodeRegistration:
+    name: ${NAME}
+localAPIEndpoint:
+    advertiseAddress: ${HOST}
+---
+apiVersion: "kubeadm.k8s.io/v1beta3"
+kind: ClusterConfiguration
+etcd:
+    local:
+        serverCertSANs:
+        - "${HOST}"
+        peerCertSANs:
+        - "${HOST}"
+        extraArgs:
+            initial-cluster: ${NAMES[0]}=https://${HOSTS[0]}:2380,${NAMES[1]}=https://${HOSTS[1]}:2380,${NAMES[2]}=https://${HOSTS[2]}:2380
+            initial-cluster-state: new
+            name: ${NAME}
+            listen-peer-urls: https://${HOST}:2380
+            listen-client-urls: https://${HOST}:2379
+            advertise-client-urls: https://${HOST}:2379
+            initial-advertise-peer-urls: https://${HOST}:2380
+EOF
+done
+{% endraw %}

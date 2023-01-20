@@ -1,0 +1,36 @@
+- name: labeling worker nodes (1/2)
+  ansible.builtin.template:
+    src: ./templates/labeling-nodes-sh.j2
+    dest: /tmp/labeling-nodes.sh
+    owner: root
+    group: root
+    mode: "0644"
+  run_once: true
+
+- name: labeling worker nodes (2/2)
+  ansible.builtin.shell: |
+    bash /tmp/labeling-nodes.sh
+  run_once: true
+
+- name: install helm
+  ansible.builtin.shell: |
+    curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    chmod 700 /tmp/get_helm.sh
+    /tmp/get_helm.sh
+  run_once: true
+
+- name: install metrics-server (1/2)
+  ansible.builtin.template:
+    src: ./templates/metrics-server-yml.j2
+    dest: /tmp/metrics-server.yml
+    owner: root
+    group: root
+    mode: "0644"
+  when: metrics_server|bool == true
+  run_once: true
+
+- name: install metrics-server (2/2)
+  ansible.builtin.shell: |
+    kubectl apply -f /tmp/metrics-server.yml
+  when: metrics_server|bool == true
+  run_once: true

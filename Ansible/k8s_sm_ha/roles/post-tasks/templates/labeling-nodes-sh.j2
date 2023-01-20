@@ -1,0 +1,5 @@
+#!/bin/bash
+
+{% for host in groups['worker'] %}
+kubectl label nodes {{ host }} node-role.kubernetes.io/worker=true;
+{% endfor %}

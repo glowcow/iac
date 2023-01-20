@@ -1,11 +1,3 @@
-- name: install kube packages on master
-  ansible.builtin.apt:
-    pkg:
-    - kubelet={{cluster_version}}
-    - kubeadm={{cluster_version}}
-    - kubectl={{cluster_version}}
-    update_cache: yes
-
 - name: init kubernetes cluster on master (1/2)
   ansible.builtin.shell: |
     kubeadm init --pod-network-cidr={{pod_net}} --service-cidr={{svc_net}} --ignore-preflight-errors="NumCPU"
@@ -38,7 +30,3 @@
   ansible.builtin.set_fact:
     kubeadm_join: "{{kubeadm_join_out.stdout}}"
   run_once: true
-
-- name: disabling updates for cluster core components
-  ansible.builtin.shell: |
-    apt-mark hold containerd.io kubeadm kubectl kubelet

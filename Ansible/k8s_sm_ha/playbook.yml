@@ -1,5 +1,5 @@
 ---
-- name: AWS self-managed k8s cluster configuration
+- name: AWS self-managed k8s HA cluster configuration
   hosts: all
   become: true
   roles:
@@ -14,14 +14,9 @@
       tags:
         - post-tasks
         - cluster-setup
-        - node-add
   vars:
-    - etcdctl_version: "3.5.6"
-    - cluster_version: "1.25.5-00"
-    - containerd_version: "1.6.14-1"
+    - cluster_version: "1.25.6-00"
+    - containerd_version: "1.6.15-1"
     - pod_net: "10.100.0.0/16"
-    - svc_net: "10.200.1.0/24"
-    - traefik_ingress: true
-    - metallb: true
-    - rook_ceph: false
+    - svc_net: "10.200.0.0/22"
     - metrics_server: true

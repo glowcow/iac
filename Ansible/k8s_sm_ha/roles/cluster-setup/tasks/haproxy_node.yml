@@ -1,0 +1,12 @@
+- name: generate haproxy config
+  ansible.builtin.template:
+    src: ./templates/haproxy-conf.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: restart haproxy
+  ansible.builtin.systemd:
+    state: restarted
+    name: haproxy
