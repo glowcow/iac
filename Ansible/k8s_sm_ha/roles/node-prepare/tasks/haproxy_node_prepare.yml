@@ -19,6 +19,7 @@
   ansible.builtin.apt:
     pkg:
     - haproxy
+    - keepalived
     update_cache: yes
     state: latest
 
@@ -31,9 +32,9 @@
     regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
     replace: '# \1'
 
-- name: disabling updates for cluster core components
+- name: disabling components updates 
   ansible.builtin.shell: |
-    apt-mark hold haproxy
+    apt-mark hold haproxy keepalived
 
 #- name: rebooting all nodes for applying updates
 #  ansible.builtin.shell: |

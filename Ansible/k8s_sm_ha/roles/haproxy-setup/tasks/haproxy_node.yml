@@ -1,0 +1,43 @@
+#- name: add the user keepalived_script
+#  ansible.builtin.user:
+#    name: keepalived_script
+#    group: keepalived_script
+#    shell: /sbin/nologin
+#    state: present
+#    create_home: yes
+
+- name: generate keepalived master config
+  ansible.builtin.template:
+    src: ./templates/keepalived-master.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: "inventory_hostname == groups['haproxy'][0]"
+
+- name: generate keepalived backup config
+  ansible.builtin.template:
+    src: ./templates/keepalived-backup.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "0644"
+  when: "inventory_hostname == groups['haproxy'][1]"
+
+- name: restart keepalived
+  ansible.builtin.systemd:
+    state: restarted
+    name: keepalived
+
+- name: generate haproxy config
+  ansible.builtin.template:
+    src: ./templates/haproxy-conf.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: restart haproxy
+  ansible.builtin.systemd:
+    state: restarted
+    name: haproxy

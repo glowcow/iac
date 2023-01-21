@@ -1,7 +1,3 @@
-- name: Setup haproxy nodes tasks
-  include_tasks: "haproxy_node.yml"
-  when: inventory_hostname in groups["haproxy"]
-
 - name: Setup ETCD nodes tasks
   include_tasks: "etcd_node.yml"
   when: inventory_hostname in groups["etcd"]

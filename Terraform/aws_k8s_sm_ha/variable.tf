@@ -52,7 +52,7 @@ variable "hap_instance_type" {
 variable "hap_ec2_count" {
   description = "Count of the AWS EC2 for haproxy"
   type        = number
-  default     = 1
+  default     = 2
 }
 variable "ami_image" {
   description = "AMI images id Ubuntu 22.04 (eu-west-1)"

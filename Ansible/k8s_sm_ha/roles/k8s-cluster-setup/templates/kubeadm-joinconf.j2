@@ -3,7 +3,7 @@ kind: JoinConfiguration
 discovery:
   bootstrapToken:
     token: {{hostvars[groups['master'][0]]['kubeadm_join'].split(' ')[4] | lower}}
-    apiServerEndpoint: "{{hostvars[groups['haproxy'][0]].inventory_hostname}}:6443"
+    apiServerEndpoint: "{{ha_dns}}:6443"
     caCertHashes: ["{{hostvars[groups['master'][0]]['kubeadm_join'].split(' ')[6] | lower}}"]
 nodeRegistration:
   name: {{inventory_hostname}}

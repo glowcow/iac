@@ -33,32 +33,15 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 frontend kubernetes
-    bind :6443
+    bind *:6443
     option tcplog
     mode tcp
-    default_backend kubernetes-master-nodes
-frontend http_front
-    mode http
-    bind :80
-    default_backend http_back
-frontend https_front
-    mode http
-    bind :443
-    default_backend https_back
-backend kubernetes-master-nodes
+    default_backend kube-apiserver
+backend kube-apiserver
     mode tcp
     balance roundrobin
     option tcp-check
+    default-server inter 10s downinter 5s rise 2 fall 2 slowstart 60s maxconn 250 maxqueue 256 weight 100
     {% for host in groups['master'] %}
-    server {{hostvars[host].inventory_hostname}} {{hostvars[host].ansible_default_ipv4.address}}:6443 check fall 3 rise 2
-    {% endfor %}
-backend http_back
-    mode http
-    {% for host in groups['master'] %}
-    server {{hostvars[host].inventory_hostname}} {{hostvars[host].ansible_default_ipv4.address}}:32059 check fall 3 rise 2
-    {% endfor %}
-backend https_back
-    mode http
-    {% for host in groups['master'] %}
-    server {{hostvars[host].inventory_hostname}} {{hostvars[host].ansible_default_ipv4.address}}:32423 check fall 3 rise 2
+    server {{hostvars[host].inventory_hostname}} {{hostvars[host].ansible_default_ipv4.address}}:6443 check
     {% endfor %}

@@ -8,6 +8,7 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 ff02::3 ip6-allhosts
 
+{{ha_vip.split('/')[0] | lower}} {{ha_dns}}
 {% for host in groups['haproxy'] %}
 {{hostvars[host].ansible_default_ipv4.address}} {{hostvars[host].inventory_hostname}}
 {% endfor %}

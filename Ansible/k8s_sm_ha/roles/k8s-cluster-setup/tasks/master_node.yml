@@ -64,5 +64,5 @@
 
 - name: join other master to cluster
   ansible.builtin.shell: |
-    kubeadm join {{hostvars[groups['haproxy'][0]].inventory_hostname}}:6443 --token {{hostvars[groups['master'][0]]['kubeadm_join'].split(' ')[4] | lower}} --discovery-token-ca-cert-hash {{hostvars[groups['master'][0]]['kubeadm_join'].split(' ')[6] | lower}} --control-plane --certificate-key {{hostvars[groups['master'][0]]['kubeadm_ca_key']}}
+    kubeadm join {{ha_dns}}:6443 --token {{hostvars[groups['master'][0]]['kubeadm_join'].split(' ')[4] | lower}} --discovery-token-ca-cert-hash {{hostvars[groups['master'][0]]['kubeadm_join'].split(' ')[6] | lower}} --control-plane --certificate-key {{hostvars[groups['master'][0]]['kubeadm_ca_key']}}
   when: "inventory_hostname == groups['master'][1] or inventory_hostname == groups['master'][2]"

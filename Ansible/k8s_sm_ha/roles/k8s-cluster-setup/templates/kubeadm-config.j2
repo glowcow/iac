@@ -2,7 +2,7 @@
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: stable
-controlPlaneEndpoint: "{{hostvars[groups['haproxy'][0]].inventory_hostname}}:6443"
+controlPlaneEndpoint: "{{ha_dns}}:6443"
 etcd:
   external:
     endpoints:

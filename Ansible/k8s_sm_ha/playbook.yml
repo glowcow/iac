@@ -6,17 +6,20 @@
     - role: node-prepare
       tags:
         - node-prepare
-        - cluster-setup
-    - role: cluster-setup
+    - role: haproxy-setup
       tags:
-        - cluster-setup
+        - haproxy-setup
+    - role: k8s-cluster-setup
+      tags:
+        - k8s-cluster-setup
     - role: post-tasks
       tags:
         - post-tasks
-        - cluster-setup
   vars:
     - cluster_version: "1.25.6-00"
     - containerd_version: "1.6.15-1"
     - pod_net: "10.100.0.0/16"
     - svc_net: "10.200.0.0/22"
+    - ha_vip: "172.16.16.254/24"
+    - ha_dns: "k8s-aws-api"
     - metrics_server: true
