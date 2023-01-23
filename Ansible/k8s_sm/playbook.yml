@@ -6,15 +6,12 @@
     - role: node-prepare
       tags:
         - node-prepare
-        - cluster-setup
     - role: cluster-setup
       tags:
         - cluster-setup
     - role: post-tasks
       tags:
         - post-tasks
-        - cluster-setup
-        - node-add
   vars:
     etcdctl_version: "3.5.6"
     cluster_version: "1.25.6-00"
