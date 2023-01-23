@@ -16,12 +16,12 @@
         - cluster-setup
         - node-add
   vars:
-    - etcdctl_version: "3.5.6"
-    - cluster_version: "1.25.5-00"
-    - containerd_version: "1.6.14-1"
-    - pod_net: "10.100.0.0/16"
-    - svc_net: "10.200.1.0/24"
-    - traefik_ingress: true
-    - metallb: true
-    - rook_ceph: false
-    - metrics_server: true
+    etcdctl_version: "3.5.6"
+    cluster_version: "1.25.6-00"
+    containerd_version: "1.6.15-1"
+    pod_net: "10.100.0.0/16"
+    svc_net: "10.200.1.0/24"
+    traefik_ingress: true
+    metallb: true
+    rook_ceph: false
+    metrics_server: true
