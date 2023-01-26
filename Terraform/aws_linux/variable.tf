@@ -11,12 +11,12 @@ variable "ec2_name" {
 variable "instance_type" {
   description = "CPU and RAM of the AWS EC2"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.medium"
 }
 variable "ami_image" {
-  description = "AMI images id Ubuntu 22.04 (eu-west-1)"
+  description = "AMI images id Ubuntu 20.04 (eu-west-1)"
   type        = string
-  default     = "ami-026e72e4e468afa7b"
+  default     = "ami-0c68b55d1c875067e"
 }
 variable "def_user" {
   description = "Default username of Ubuntu 20.04"
