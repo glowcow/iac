@@ -1,0 +1,66 @@
+---
+- name: Install Prometheus Node Exporter
+  hosts: all
+  become: true
+  vars:
+    node_exporter_version: "1.5.0"
+    node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+    node_exporter_path: /opt/node_exporter
+
+  tasks:
+    - name: Create prometheus User and Group (1/2)
+      group:
+        name: prometheus
+        state: present
+        system: yes
+
+    - name: Create prometheus User and Group (2/2)
+      user:
+        name: prometheus
+        group: prometheus
+        shell: /sbin/nologin
+        state: present
+        system: yes
+
+    - name: Download Prometheus Node Exporter
+      get_url:
+        url: "{{ node_exporter_url }}"
+        dest: /tmp/node_exporter.tar.gz
+
+    - name: Extract Prometheus Node Exporter
+      unarchive:
+        src: /tmp/node_exporter.tar.gz
+        dest: /opt
+        remote_src: yes
+
+    - name: Create Prometheus Node Exporter Directory
+      file:
+        path: "{{ node_exporter_path }}"
+        state: directory
+
+    - name: Move Prometheus Node Exporter to Installed Directory
+      command: "mv /opt/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter {{ node_exporter_path }}/node_exporter"
+
+    - name: Remove Tmp Node Exporter Folder
+      file:
+        path: /opt/node_exporter-{{ node_exporter_version }}.linux-amd64
+        state: absent
+
+    - name: Change ownership of Node Exporter Folder
+      file:
+        path: /opt/node_exporter
+        owner: prometheus
+        group: prometheus
+        recurse: yes
+        state: directory
+
+    - name: Create Systemd Service for Prometheus Node Exporter
+      template:
+        src: ./prometheus_node_exporter.service.j2
+        dest: /etc/systemd/system/prometheus_node_exporter.service
+
+    - name: Start Prometheus Node Exporter Service
+      systemd:
+        name: prometheus_node_exporter
+        state: started
+        enabled: yes

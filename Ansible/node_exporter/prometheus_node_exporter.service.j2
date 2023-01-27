@@ -1,0 +1,11 @@
+[Unit]
+Description=Prometheus Node Exporter
+
+[Service]
+ExecStart=/opt/node_exporter/node_exporter
+User=prometheus
+Group=prometheus
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
