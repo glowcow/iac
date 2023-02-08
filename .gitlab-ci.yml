@@ -12,7 +12,6 @@ create infrastructure:
   image: 
     name: $TF_IMG
     entrypoint: [""]
-  allow_failure: false
   rules:
     - if: $CI_COMMIT_REF_NAME =~ "master" && $TF
     - if: $CI_COMMIT_REF_NAME =~ "dev" && $TF
@@ -61,6 +60,7 @@ destroy infrastructure:
   image: 
     name: $TF_IMG
     entrypoint: [""]
+  allow_failure: true
   rules:
     - if: $CI_COMMIT_REF_NAME =~ "master" && $TF
       when: manual
