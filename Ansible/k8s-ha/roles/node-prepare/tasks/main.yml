@@ -1,0 +1,11 @@
+- name: haproxy nodes prepare tasks
+  include_tasks: "haproxy_node_prepare.yml"
+  when: ('haproxy' in group_names)
+
+- name: node exporter prepare tasks
+  include_tasks: "node_exporter.yml"
+  when: ('haproxy' in group_names) or ('etcd' in group_names)
+
+- name: k8s nodes prepare tasks
+  include_tasks: "k8s_node_prepare.yml"
+  when: ('master' in group_names) or ('worker' in group_names) or ('etcd' in group_names)

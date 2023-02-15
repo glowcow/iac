@@ -1,11 +1,3 @@
-#- name: add the user keepalived_script
-#  ansible.builtin.user:
-#    name: keepalived_script
-#    group: keepalived_script
-#    shell: /sbin/nologin
-#    state: present
-#    create_home: yes
-
 - name: generate keepalived master config
   ansible.builtin.template:
     src: ./templates/keepalived-master.j2

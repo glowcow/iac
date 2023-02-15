@@ -1,0 +1,31 @@
+---
+- name: self-managed k8s HA cluster configuration (with dedicated ETCD cluster)
+  hosts: all
+  become: true
+  roles:
+    - role: node-prepare
+      tags:
+        - node-prepare
+    - role: haproxy-setup
+      tags:
+        - haproxy-setup
+    - role: etcd-cluster-setup
+      tags:
+        - etcd-cluster-setup
+    - role: k8s-cluster-setup
+      tags:
+        - k8s-cluster-setup
+    - role: post-tasks
+      tags:
+        - post-tasks
+  vars:
+    cluster_version: "1.25.6-00"
+    containerd_version: "1.6.15-1"
+    pod_net: "10.199.0.0/16"
+    svc_net: "10.200.0.0/20"
+    ha_vip: "10.12.51.26/24"
+    ha_dns: "kube-api"
+    metrics_server: true
+    node_exporter_version: "1.5.0"
+    node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+    node_exporter_path: /opt/node_exporter

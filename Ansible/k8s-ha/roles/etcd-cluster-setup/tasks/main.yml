@@ -1,0 +1,3 @@
+- name: Setup ETCD nodes tasks
+  include_tasks: "etcd_node.yml"
+  when: inventory_hostname in groups["etcd"]
