@@ -32,7 +32,7 @@ variable "worker_instance_type" {
 variable "worker_ec2_count" {
   description = "Count of the AWS EC2"
   type        = number
-  default     = 2
+  default     = 3
 }
 variable "ami_image" {
   description = "AMI images id Ubuntu 22.04 (eu-west-1)"
@@ -47,7 +47,7 @@ variable "def_user" {
 variable "ebs_size" {
   description = "Size in Gb of the AWS EBS Volume"
   type        = number
-  default     = 5
+  default     = 8
 }
 variable "aws_region" {
   description = "AWS region"
