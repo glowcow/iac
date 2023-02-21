@@ -149,8 +149,8 @@
 - name: reveal ceph dashboard password (1/2)
   ansible.builtin.shell: |
     kubectl get secrets rook-ceph-dashboard-password -n rook-ceph -o=jsonpath='{.data.password}' | base64 -d
-  register: rook-ceph-dashboard-password
+  register: rook_ceph_dashboard_password
 
 - name: reveal ceph dashboard password (2/2)
   debug:
-    var: rook-ceph-dashboard-password.stdout_lines
+    var: rook_ceph_dashboard_password.stdout_lines
