@@ -146,6 +146,11 @@
     kubectl apply -f /tmp/cj-etcd-backup.yml
   run_once: true
 
+- name: pause for 2 minutes to rook-ceph completely up
+  ansible.builtin.pause:
+    minutes: 2
+    prompt: "Pause for 2 minutes to rook-ceph completely up" 
+
 - name: reveal ceph dashboard password (1/2)
   ansible.builtin.shell: |
     kubectl get secrets rook-ceph-dashboard-password -n rook-ceph -o=jsonpath='{.data.password}' | base64 -d
