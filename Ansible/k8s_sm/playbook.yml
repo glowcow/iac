@@ -22,3 +22,5 @@
     metallb: true
     rook_ceph: true
     metrics_server: true
+    traefik_dashboard_host: "traefik.k8s.glowcow.xyz"
+    ceph_dashboard_host: "ceph-dash.k8s.glowcow.xyz"

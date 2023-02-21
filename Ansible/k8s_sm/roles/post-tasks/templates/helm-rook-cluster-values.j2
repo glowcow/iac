@@ -1,4 +1,4 @@
-# Default values for a single rook-ceph cluster
+{% raw %}# Default values for a single rook-ceph cluster
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -390,7 +390,7 @@ ingress:
     #   nginx.ingress.kubernetes.io/server-snippet: |
     #     proxy_ssl_verify off;
     host:
-      name: ceph-dashboard.k8s.glowcow.xyz
+      name: {% endraw %}{{ ceph_dashboard_host }}{% raw %}
       path: "/"
     # tls:
     # - hosts:
@@ -408,7 +408,7 @@ cephBlockPools:
     spec:
       failureDomain: host
       replicated:
-        size: 3
+        size: 1
     storageClass:
       enabled: true
       name: ceph-block
@@ -467,11 +467,11 @@ cephFileSystems:
     spec:
       metadataPool:
         replicated:
-          size: 3
+          size: 1
       dataPools:
         - failureDomain: host
           replicated:
-            size: 3
+            size: 1
           # Optional and highly recommended, 'data0' by default, see https://github.com/rook/rook/blob/master/Documentation/CRDs/Shared-Filesystem/ceph-filesystem-crd.md#pools
           name: data0
       metadataServer:
@@ -541,7 +541,7 @@ cephObjectStores:
       metadataPool:
         failureDomain: host
         replicated:
-          size: 3
+          size: 1
       dataPool:
         failureDomain: host
         erasureCoded:
@@ -572,3 +572,4 @@ cephObjectStores:
       parameters:
         # note: objectStoreNamespace and objectStoreName are configured by the chart
         region: eu-west-1
+{% endraw %}
