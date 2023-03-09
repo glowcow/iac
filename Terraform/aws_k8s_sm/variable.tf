@@ -40,7 +40,7 @@ variable "ami_image" {
   default     = "ami-026e72e4e468afa7b"
 }
 variable "def_user" {
-  description = "Default username of Ubuntu 20.04"
+  description = "Default username of Ubuntu 22.04"
   type        = string
   default     = "ubuntu"
 }
