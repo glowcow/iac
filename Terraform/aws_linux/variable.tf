@@ -13,13 +13,23 @@ variable "instance_type" {
   type        = string
   default     = "t2.medium"
 }
-variable "ami_image" {
-  description = "AMI images id Ubuntu 20.04 (eu-west-1)"
+variable "root_block_size" {
+  description = "System disk size"
+  type        = number
+  default     = 10
+}
+variable "root_block_type" {
+  description = "System disk type"
   type        = string
-  default     = "ami-0c68b55d1c875067e"
+  default     = "gp2"
+}
+variable "ami_image" {
+  description = "AMI images id Ubuntu 22.04 (eu-west-1)"
+  type        = string
+  default     = "ami-026e72e4e468afa7b"
 }
 variable "def_user" {
-  description = "Default username of Ubuntu 20.04"
+  description = "Default username of Ubuntu 22.04"
   type        = string
   default     = "ubuntu"
 }

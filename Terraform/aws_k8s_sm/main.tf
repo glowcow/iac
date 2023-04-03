@@ -44,6 +44,10 @@ resource "aws_instance" "k8s-master-aws" {
   private_ip = var.master_priv_ip
   key_name = aws_key_pair.tf-k8s-sm.key_name
   vpc_security_group_ids = [aws_security_group.k8s-master-sg.id]
+  root_block_device {
+    volume_size = var.root_block_size
+    volume_type = var.root_block_type
+  }
   tags = {
       Name = "${var.ec2_name}-master${count.index}",
     }
@@ -84,6 +88,10 @@ resource "aws_instance" "k8s-worker-aws" {
   subnet_id = aws_subnet.worker_sub.id
   key_name = aws_key_pair.tf-k8s-sm.key_name
   vpc_security_group_ids = [aws_security_group.k8s-worker-sg.id]
+  root_block_device {
+    volume_size = var.root_block_size
+    volume_type = var.root_block_type
+  }
   tags = {
       Name = "${var.ec2_name}-worker${count.index}",
     }

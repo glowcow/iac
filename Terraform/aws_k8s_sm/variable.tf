@@ -14,6 +14,16 @@ variable "ec2_name" {
   type        = string
   default     = "k8s-aws"
 }
+variable "root_block_size" {
+  description = "System disk size"
+  type        = number
+  default     = 10
+}
+variable "root_block_type" {
+  description = "System disk type"
+  type        = string
+  default     = "gp2"
+}
 variable "master_instance_type" {
   description = "CPU and RAM of the AWS EC2"
   type        = string

@@ -141,7 +141,7 @@ cephClusterSpec:
   # Network configuration, see: https://github.com/rook/rook/blob/master/Documentation/CRDs/ceph-cluster-crd.md#network-configuration-settings
   network:
   #   # enable host networking
-  #  provider: host
+  #   provider: host
   #   # EXPERIMENTAL: enable the Multus network provider
   #   provider: multus
   #   selectors:
@@ -486,7 +486,7 @@ cephFileSystems:
             memory: "128Mi"
         priorityClassName: system-cluster-critical
     storageClass:
-      enabled: true
+      enabled: false
       isDefault: false
       name: ceph-filesystem
       # (Optional) specify a data pool to use, must be the name of one of the data pools above, 'data0' by default
@@ -565,7 +565,7 @@ cephObjectStores:
         bucket:
           interval: 60s
     storageClass:
-      enabled: true
+      enabled: false
       name: ceph-bucket
       reclaimPolicy: Delete
       # see https://github.com/rook/rook/blob/master/Documentation/ceph-object-bucket-claim.md#storageclass for available configuration

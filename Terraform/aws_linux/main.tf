@@ -11,6 +11,10 @@ resource "aws_instance" "linux-aws" {
   subnet_id = aws_subnet.private.id
   key_name = aws_key_pair.tf-linux.key_name
   vpc_security_group_ids = [aws_security_group.linux-sg.id]
+  root_block_device {
+    volume_size = var.root_block_size
+    volume_type = var.root_block_type
+  }
   tags = {
       Name = "${var.ec2_name}-${var.aws_region}-n${count.index}"
     }

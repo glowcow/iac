@@ -5,6 +5,8 @@
 - name: init kubernetes cluster on master (2/2)
   ansible.builtin.shell: |
     echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/environment
+    echo 'alias k="kubectl"' >> /etc/profile
+    echo 'export KUBE_EDITOR="nano"' >> /etc/profile
 
 - name: install CNI (1/2)
   ansible.builtin.template:
