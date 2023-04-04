@@ -53,6 +53,30 @@
   when: metallb|bool == true
   run_once: true
 
+- name: install traefik ingress (2/2)
+  ansible.builtin.shell: |
+    helm repo add traefik https://traefik.github.io/charts
+    helm repo update
+    helm upgrade -i traefik-ingress -n ingress-system --create-namespace --wait --atomic --version 20.8.0 traefik/traefik -f /tmp/helm-traefik-values.yaml
+  when: traefik_ingress|bool == true
+  run_once: true
+
+- name: apply traefik dashboard ingress (1/2)
+  ansible.builtin.template:
+    src: ./templates/traefik-dashboard-ingress.j2
+    dest: /tmp/traefik-dashboard-ingress.yml
+    owner: root
+    group: root
+    mode: "0644"
+  when: traefik_ingress|bool == true
+  run_once: true
+
+- name: apply traefik dashboard ingress (2/2)
+  ansible.builtin.shell: |
+    kubectl apply -f /tmp/traefik-dashboard-ingress.yml
+  when: traefik_ingress|bool == true
+  run_once: true
+
 - name: install rook-ceph (1/3)
   ansible.builtin.copy:
     src: ./templates/helm-rook-values.yaml
@@ -112,10 +136,10 @@
     kubectl apply -f /tmp/cj-etcd-backup.yml
   run_once: true
 
-- name: pause for 2 minutes to rook-ceph completely up
+- name: pause for 1 minutes to rook-ceph completely up
   ansible.builtin.pause:
-    minutes: 2
-    prompt: "Pause for 2 minutes to rook-ceph completely up" 
+    minutes: 1
+    prompt: "Pause for 1 minutes to rook-ceph completely up" 
 
 - name: install traefik ingress (1/2)
   ansible.builtin.template:
@@ -124,30 +148,6 @@
     owner: root
     group: root
     mode: "0644"
-  when: traefik_ingress|bool == true
-  run_once: true
-
-- name: install traefik ingress (2/2)
-  ansible.builtin.shell: |
-    helm repo add traefik https://traefik.github.io/charts
-    helm repo update
-    helm upgrade -i traefik-ingress -n ingress-system --create-namespace --wait --atomic --version 20.8.0 traefik/traefik -f /tmp/helm-traefik-values.yaml
-  when: traefik_ingress|bool == true
-  run_once: true
-
-- name: apply traefik dashboard ingress (1/2)
-  ansible.builtin.template:
-    src: ./templates/traefik-dashboard-ingress.j2
-    dest: /tmp/traefik-dashboard-ingress.yml
-    owner: root
-    group: root
-    mode: "0644"
-  when: traefik_ingress|bool == true
-  run_once: true
-
-- name: apply traefik dashboard ingress (2/2)
-  ansible.builtin.shell: |
-    kubectl apply -f /tmp/traefik-dashboard-ingress.yml
   when: traefik_ingress|bool == true
   run_once: true
 
