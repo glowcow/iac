@@ -19,8 +19,8 @@
       tags:
         - post-tasks
   vars:
-    cluster_version: "1.25.6-00"
-    containerd_version: "1.6.15-1"
+    cluster_version: "1.25.9-00"
+    containerd_version: "1.6.20-1"
     pod_net: "10.199.0.0/16"
     svc_net: "10.200.0.0/20"
     ha_vip: "10.12.51.26/24"

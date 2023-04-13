@@ -14,7 +14,7 @@
         - post-tasks
   vars:
     etcdctl_version: "3.5.6"
-    cluster_version: "1.25.8-00"
+    cluster_version: "1.25.9-00"
     containerd_version: "1.6.20-1"
     pod_net: "10.100.0.0/16"
     svc_net: "10.200.1.0/24"
