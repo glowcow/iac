@@ -1,0 +1,3 @@
+- name: all nodes prepare tasks
+  include_tasks: "pg_sql.yml"
+  when: ('db' in group_names) and database|bool == true

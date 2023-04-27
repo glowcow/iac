@@ -115,3 +115,39 @@ resource "aws_instance" "k8s-worker-aws" {
     ]
   }
 }
+
+resource "aws_instance" "k8s-db-aws" {
+  count = var.db_ec2_count
+  ami = var.ami_image
+  instance_type = var.db_instance_type
+  associate_public_ip_address = false
+  subnet_id = aws_subnet.worker_sub.id
+  key_name = aws_key_pair.tf-k8s-sm.key_name
+  vpc_security_group_ids = [aws_security_group.k8s-worker-sg.id]
+  root_block_device {
+    volume_size = var.root_block_size
+    volume_type = var.root_block_type
+  }
+  tags = {
+      Name = "${var.ec2_name}-db${count.index}",
+    }
+  connection {
+      type        = "ssh"
+      bastion_host = aws_instance.k8s-master-aws.0.public_ip
+      host        = self.private_ip
+      user        = var.def_user
+      private_key = file(var.pvt_key)
+      timeout     = "1m"
+   }
+  provisioner "file" {
+    source      = "~/.ssh/id_ed25519"
+    destination = ".ssh/id_ed25519"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo cp .ssh/id_ed25519 /root/.ssh/id_ed25519",
+      "chmod 600 .ssh/id_ed25519",
+      "sudo chmod 600 /root/.ssh/id_ed25519",
+    ]
+  }
+}

@@ -44,6 +44,16 @@ variable "worker_ec2_count" {
   type        = number
   default     = 3
 }
+variable "db_instance_type" {
+  description = "CPU and RAM of the AWS EC2"
+  type        = string
+  default     = "t2.small"
+}
+variable "db_ec2_count" {
+  description = "Count of the AWS EC2"
+  type        = number
+  default     = 0
+}
 variable "ami_image" {
   description = "AMI images id Ubuntu 22.04 (eu-west-1)"
   type        = string

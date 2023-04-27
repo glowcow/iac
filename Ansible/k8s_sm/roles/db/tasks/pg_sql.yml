@@ -1,0 +1,72 @@
+- name: set hostname
+  ansible.builtin.shell: "hostnamectl set-hostname {{inventory_hostname}}"
+
+- name: change /etc/hosts
+  ansible.builtin.template:
+    src: ./templates/etc-host.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: disable SWAP (1/2)
+  ansible.builtin.shell: swapoff -a
+
+- name: disable SWAP (2/2)
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: update & upgrade
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: yes
+    state: latest
+
+- name: install psycopg2 lib
+  apt:
+    name: python3-psycopg2
+    state: present
+
+- name: install PostgreSQL 14
+  apt:
+    name: postgresql-14
+    state: present
+
+- name: allow remote connections to PostgreSQL
+  lineinfile:
+    path: /etc/postgresql/14/main/postgresql.conf
+    regexp: "^#?listen_addresses.*"
+    line: "listen_addresses = '*'"
+
+- name: allow remote connections to PostgreSQL from all IP addresses
+  lineinfile:
+    path: /etc/postgresql/14/main/pg_hba.conf
+    regexp: '^host\s+all\s+all\s+127\.0\.0\.1\/32\s+scram-sha-256$'
+    line: 'host    all             all             0.0.0.0/0               md5'
+
+- name: allow local connections to PostgreSQL from sockets
+  lineinfile:
+    path: /etc/postgresql/14/main/pg_hba.conf
+    regexp: '^local\s+all\s+postgres\s+peer$'
+    line: 'local   all             all                                     trust'
+
+- name: restart PostgreSQL
+  systemd:
+    name: postgresql@14-main
+    state: restarted
+
+- name: create PostgreSQL database and user (1/2)
+  postgresql_db:
+    name: keycloak
+    state: present
+
+- name: create PostgreSQL database and user (2/2)
+  postgresql_user:
+    db: keycloak
+    name: keycloak
+    password: keycloak1234
+    encrypted: yes
+    priv: ALL
+    state: present
