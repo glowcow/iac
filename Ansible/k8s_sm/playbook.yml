@@ -20,7 +20,8 @@
     svc_net: "10.200.1.0/24"
     traefik_ingress: true
     metallb: true
-    rook_ceph: true
+    rook_ceph: false
+    piraeus_linstor: true
     k8s_dash: true
     metrics_server: true
     traefik_dashboard_host: "traefik.k8s.glowcow.xyz"

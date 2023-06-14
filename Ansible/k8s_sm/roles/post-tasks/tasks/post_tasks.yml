@@ -87,6 +87,67 @@
   when: traefik_ingress|bool == true
   run_once: true
 
+- name: install cert-manager (1/2)
+  ansible.builtin.copy:
+    src: ./templates/cert-manager-values.yaml
+    dest: /tmp/cert-manager-values.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: piraeus_linstor|bool == true
+  run_once: true
+
+- name: install cert-manager (2/2)
+  ansible.builtin.shell: |
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+    helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.12.0 -f /tmp/cert-manager-values.yaml
+  run_once: true
+
+- name: install piraeus-linstor (1/5)
+  ansible.builtin.copy:
+    src: ./templates/piraeus-linstor-cluster.yaml
+    dest: /tmp/piraeus-linstor-cluster.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: piraeus_linstor|bool == true
+  run_once: true
+
+- name: install piraeus-linstor (2/5)
+  ansible.builtin.copy:
+    src: ./templates/piraeus-linstor.yaml
+    dest: /tmp/piraeus-linstor.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: piraeus_linstor|bool == true
+  run_once: true
+
+- name: install piraeus-linstor (3/5)
+  ansible.builtin.shell: |
+    kubectl apply --server-side -k "https://github.com/piraeusdatastore/piraeus-operator//config/default?ref=v2"
+  when: piraeus_linstor|bool == true
+  run_once: true
+
+- name: pause for 1 minutes to piraeus-linstor completely up
+  ansible.builtin.pause:
+    minutes: 1
+    prompt: "Pause for 1 minutes to piraeus-linstor completely up"
+  when: piraeus_linstor|bool == true
+
+- name: install piraeus-linstor (4/5)
+  ansible.builtin.shell: |
+    kubectl apply -n piraeus-datastore -f /tmp/piraeus-linstor-cluster.yaml
+  when: piraeus_linstor|bool == true
+  run_once: true
+
+- name: install piraeus-linstor (5/5)
+  ansible.builtin.shell: |
+    kubectl apply -n piraeus-datastore -f /tmp/piraeus-linstor.yaml
+  when: piraeus_linstor|bool == true
+  run_once: true
+
 - name: install rook-ceph (1/3)
   ansible.builtin.copy:
     src: ./templates/helm-rook-values.yaml
@@ -149,7 +210,8 @@
 - name: pause for 1 minutes to rook-ceph completely up
   ansible.builtin.pause:
     minutes: 1
-    prompt: "Pause for 1 minutes to rook-ceph completely up" 
+    prompt: "Pause for 1 minutes to rook-ceph completely up"
+  when: rook_ceph|bool == true
 
 - name: install kubernetes dashboard (1/4)
   ansible.builtin.copy:
