@@ -20,6 +20,7 @@
     pkg:
     - curl
     - apt-transport-https
+    - ca-certificates
     - git
     - gnupg2
     - software-properties-common
@@ -90,7 +91,7 @@
 
 - name: add google cloud repo
   ansible.builtin.shell: |
-    sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
     echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 - name: install kube cluster core components
