@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-terraformrc
+data:
+  .terraformrc: |
+    provider_installation {
+      network_mirror {
+        url = "https://registry.comcloud.xyz/"
+      }
+    }

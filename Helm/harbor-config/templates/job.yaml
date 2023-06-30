@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-job-{{ include "chart.checksumConfigMap" . }}
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Release.Name }}-sa
+      containers:
+      - name: terraform
+        image: hashicorp/terraform:1.5.1
+        command: ["/bin/sh", "-c"]
+        args:
+        - terraform init && terraform apply -auto-approve
+        volumeMounts:
+        - name: terraform-directory
+          mountPath: "/terraform"
+        - name: terraform-config-volume
+          mountPath: /terraform/main.tf
+          subPath: "main.tf"
+        - name: terraformrc-config-volume
+          mountPath: /root/.terraformrc
+          subPath: .terraformrc
+        workingDir: /terraform
+        env:
+        - name: TF_PLUGIN_CACHE_DIR
+          value: "/terraform"
+      volumes:
+      - name: terraform-config-volume
+        configMap:
+          name: {{ .Release.Name }}-configmap
+      - name: terraformrc-config-volume
+        configMap:
+          name: {{ .Release.Name }}-terraformrc
+      - name: terraform-directory
+        emptyDir: {}
+      restartPolicy: Never
+  backoffLimit: 1

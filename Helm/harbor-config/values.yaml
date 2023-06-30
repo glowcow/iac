@@ -1,0 +1,49 @@
+Harbor:
+  url: "https://harbor.prod.com"
+  username: "admin"
+  password: "Harbor12345"
+
+GarbageCollection:
+  schedule: Daily
+  delete_untagged: true
+
+RegistryProject:
+  - docker:
+      registry:
+        provider_name: "docker-hub"
+        insecure: false
+        name: "docker.io"
+        access_id: ""
+        access_secret: ""
+        endpoint_url: "https://hub.docker.com"
+      project:
+        name: "docker.io"
+        storage_quota: 20
+        vulnerability_scanning: false
+        public: true
+  - quay:
+      registry:
+        provider_name: "quay"
+        insecure: false
+        name: "quay.io"
+        access_id: ""
+        access_secret: ""
+        endpoint_url: "https://quay.io"
+      project:
+        name: "quay.io"
+        storage_quota: 10
+        vulnerability_scanning: false
+        public: true
+  - k8s:
+      registry:
+        provider_name: "harbor"
+        insecure: false
+        name: "registry.k8s.io"
+        access_id: ""
+        access_secret: ""
+        endpoint_url: "https://registry.k8s.io"
+      project:
+        name: "registry.k8s.io"
+        storage_quota: 10
+        vulnerability_scanning: false
+        public: true

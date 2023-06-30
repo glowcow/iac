@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  main.tf: |
+    terraform {
+      required_providers {
+        harbor = {
+          source = "goharbor/harbor"
+          version = "~> 3.9"
+        }
+      }
+      backend "kubernetes" {
+        secret_suffix = "harbor-config"
+        namespace    = "{{ .Release.Namespace }}"
+      }
+    }
+
+    provider "harbor" {
+      url      = "{{ $.Values.Harbor.url }}"
+      username = "{{ $.Values.Harbor.username }}"
+      password = "{{ $.Values.Harbor.password }}"
+    }
+    {{ range $element := $.Values.RegistryProject }}
+    {{ range $key, $value := $element }}
+    resource "harbor_registry" "{{ $value.registry.name | replace "." "-" }}" {
+      provider_name = "{{ $value.registry.provider_name }}"
+      insecure      = {{ $value.registry.insecure }}
+      name          = "{{ $value.registry.name }}"
+      access_id     = "{{ $value.registry.access_id }}"
+      access_secret = "{{ $value.registry.access_secret }}"
+      endpoint_url  = "{{ $value.registry.endpoint_url }}"
+    }
+
+    resource "harbor_project" "{{ $value.project.name | replace "." "-" }}" {
+      name                    = "{{ $value.project.name }}"
+      storage_quota           = {{ $value.project.storage_quota }}
+      vulnerability_scanning  = {{ $value.project.vulnerability_scanning }}
+      public                  = {{ $value.project.public }}
+      registry_id             = harbor_registry.{{ $value.registry.name  | replace "." "-" }}.registry_id
+    }
+
+    resource "harbor_retention_policy" "{{ $value.project.name | replace "." "-"  }}" {
+        scope    = harbor_project.{{ $value.project.name | replace "." "-"  }}.id
+        schedule = "Daily"
+        rule {
+            n_days_since_last_pull = 14
+            repo_matching = "**"
+            tag_matching = "**"
+        }
+    }
+    {{ end }}
+    {{ end }}
+
+    resource "harbor_garbage_collection" "main" {
+      schedule        = "{{ $.Values.GarbageCollection.schedule }}"
+      delete_untagged = {{ $.Values.GarbageCollection.delete_untagged }}
+    }

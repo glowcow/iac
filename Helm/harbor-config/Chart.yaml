@@ -1,0 +1,9 @@
+apiVersion: v2
+name: harbor-config
+description: Chart for Harbor configuration with Terraform
+
+type: application
+
+version: 0.1.5
+
+appVersion: "1.5.1"
