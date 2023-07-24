@@ -1,0 +1,26 @@
+---
+- name: AWS self-managed k8s cluster with RKE2
+  hosts: all
+  become: true
+  roles:
+    - role: node-prepare
+      tags:
+        - node-prepare
+    - role: cluster-setup
+      tags:
+        - cluster-setup
+    - role: post-tasks
+      tags:
+        - post-tasks
+  vars:
+    rke_version: v1.26.6+rke2r1 # https://github.com/rancher/rke2/releases
+    network_manager_system: false # for RHEL should be true
+    reboot_after_prepared: false # reboot all VM after "node-prepare" role is done
+    traefik_ingress: true
+    metallb: true
+    rook_ceph: false
+    piraeus_linstor: true
+    k8s_dash: true
+    traefik_dashboard_host: "traefik.k8s.glowcow.xyz"
+    ceph_dashboard_host: "ceph-dash.k8s.glowcow.xyz"
+    k8s_dashboard_host: "dashboard.k8s.glowcow.xyz"

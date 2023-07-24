@@ -1,0 +1,15 @@
+- name: Setup cluster post tasks
+  include_tasks: "post_tasks.yml"
+  when: inventory_hostname in groups["master"]
+
+- name: Install piraeus linstor
+  include_tasks: "piraeus_linstor.yaml"
+  when: piraeus_linstor|bool == true
+
+- name: Install rook-ceph
+  include_tasks: "rook_ceph.yaml"
+  when: rook_ceph|bool == true
+
+- name: Install traefik
+  include_tasks: "traefik.yaml"
+  when: traefik_ingress|bool == true

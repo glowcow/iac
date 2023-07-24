@@ -1,0 +1,104 @@
+- name: labeling worker nodes (1/2)
+  ansible.builtin.template:
+    src: ./templates/labeling-nodes-sh.j2
+    dest: /tmp/labeling-nodes.sh
+    owner: root
+    group: root
+    mode: "0644"
+  run_once: true
+
+- name: labeling worker nodes (2/2)
+  ansible.builtin.shell: |
+    bash /tmp/labeling-nodes.sh
+  run_once: true
+
+- name: install helm (1/2)
+  ansible.builtin.shell: |
+    curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+    chmod 700 /tmp/get_helm.sh
+    /tmp/get_helm.sh
+
+- name: install helm (2/2)
+  ansible.builtin.shell: |
+    echo 'alias h="helm --kubeconfig /etc/rancher/rke2/rke2.yaml"' >> /etc/bash.bashrc
+
+- name: install metallb load balancer (1/4)
+  ansible.builtin.template:
+    src: ./templates/helm-metallb-values.j2
+    dest: /tmp/helm-metallb-values.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  when: metallb|bool == true
+  run_once: true
+
+- name: install metallb load balancer (2/4)
+  ansible.builtin.shell: |
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo add metallb https://metallb.github.io/metallb
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo update
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml upgrade -i metallb -n metallb-system --create-namespace --wait --atomic --version 0.13.7 metallb/metallb -f /tmp/helm-metallb-values.yaml
+  when: metallb|bool == true
+  run_once: true
+
+- name: install metallb load balancer (3/4)
+  ansible.builtin.template:
+    src: ./templates/metallb-pool.j2
+    dest: /tmp/metallb-pool.yml
+    owner: root
+    group: root
+    mode: "0644"
+  when: metallb|bool == true
+  run_once: true
+
+- name: install metallb load balancer (4/4)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml apply -f /tmp/metallb-pool.yml
+  when: metallb|bool == true
+  run_once: true
+
+- name: install kubernetes dashboard (1/4)
+  ansible.builtin.copy:
+    src: ./templates/kube_dash_sa.yaml
+    dest: /tmp/kube_dash_sa.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  when: k8s_dash|bool == true
+  run_once: true
+
+- name: install kubernetes dashboard (2/4)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml apply -f /tmp/kube_dash_sa.yaml
+  when: k8s_dash|bool == true
+  run_once: true
+
+- name: install kubernetes dashboard (3/4)
+  ansible.builtin.template:
+    src: ./templates/helm-k8s-dash-values.j2
+    dest: /tmp/helm-k8s-dash-values.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  when: k8s_dash|bool == true
+  run_once: true
+
+- name: install kubernetes dashboard (4/4)
+  ansible.builtin.shell: |
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo update
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml upgrade -i kubernetes-dashboard -n kubernetes-dashboard --wait --atomic --version 6.0.0 kubernetes-dashboard/kubernetes-dashboard -f /tmp/helm-k8s-dash-values.yaml
+  when: k8s_dash|bool == true
+  run_once: true
+
+- name: reveal kubernetes dashboard token (1/2)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml -n kubernetes-dashboard get secret secret-sa-k8s-dash -o=jsonpath='{.data.token}' | base64 -d
+  register: kubernetes_dashboard_token
+  when: k8s_dash|bool == true
+  run_once: true
+
+- name: reveal kubernetes dashboard token (2/2)
+  debug:
+    var: kubernetes_dashboard_token.stdout_lines
+  when: k8s_dash|bool == true
+  run_once: true

@@ -1,0 +1,34 @@
+- name: create rke2 config  (1/2)
+  ansible.builtin.file:
+    path: /etc/rancher/rke2/
+    state: directory
+
+- name: create rke2 config (2/2)
+  ansible.builtin.template:
+    src: ./templates/rke-config-worker.yaml.j2
+    dest: /etc/rancher/rke2/config.yaml
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: init agent(worker) node (1/2)
+  ansible.builtin.shell: |
+    curl -sfL https://get.rke2.io | sh -
+  environment:
+    INSTALL_RKE2_VERSION: "{{ rke_version }}"
+    INSTALL_RKE2_TYPE: "agent"
+
+- name: init agent(worker) node (2/2)
+  ansible.builtin.systemd:
+    name: rke2-agent
+    state: started
+    enabled: yes
+
+- name: add aliases
+  ansible.builtin.shell: |
+    echo 'alias c="/var/lib/rancher/rke2/bin/crictl -r unix:///run/k3s/containerd/containerd.sock"' >> /etc/bash.bashrc
+
+- name: pause for 1 minutes to rke2-agent completely up
+  ansible.builtin.pause:
+    minutes: 1
+    prompt: "Pause for 1 minutes to rke2-agent completely up"

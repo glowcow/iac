@@ -1,0 +1,5 @@
+#!/bin/bash
+
+{% for host in groups['worker'] %}
+/var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml label nodes {{ host }} node-role.kubernetes.io/worker=true;
+{% endfor %}

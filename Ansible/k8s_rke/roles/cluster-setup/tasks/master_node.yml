@@ -1,0 +1,41 @@
+- name: create rke2 config (1/2)
+  ansible.builtin.file:
+    path: /etc/rancher/rke2/
+    state: directory
+
+- name: create rke2 config (2/2)
+  ansible.builtin.copy:
+    src: ./templates/rke-config-master.yaml
+    dest: /etc/rancher/rke2/config.yaml
+
+- name: init server(master) node (1/2)
+  ansible.builtin.shell: |
+    curl -sfL https://get.rke2.io | sh -
+  environment:
+    INSTALL_RKE2_VERSION: "{{ rke_version }}"
+
+- name: init server(master) node (2/2)
+  ansible.builtin.systemd:
+    name: rke2-server
+    state: started
+    enabled: yes
+
+- name: add aliases
+  ansible.builtin.shell: |
+    echo 'alias k="/var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml"' >> /etc/bash.bashrc
+    echo 'alias c="/var/lib/rancher/rke2/bin/crictl -r unix:///run/k3s/containerd/containerd.sock"' >> /etc/bash.bashrc
+    echo 'export KUBE_EDITOR="nano"' >> /etc/environment
+
+- name: pause for 1 minutes to rke2-server completely up
+  ansible.builtin.pause:
+    minutes: 1
+    prompt: "Pause for 1 minutes to rke2-server completely up"
+
+- name: get node-token for worker nodes (1/2)
+  shell: "cat /var/lib/rancher/rke2/server/node-token"
+  register: master_node_token
+  changed_when: false
+
+- name: get node-token for worker nodes (2/2)
+  ansible.builtin.set_fact:
+    rke_join: "{{ master_node_token.stdout }}"

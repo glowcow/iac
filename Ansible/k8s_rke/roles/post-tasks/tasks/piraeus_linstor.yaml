@@ -1,0 +1,54 @@
+- name: install cert-manager (1/2)
+  ansible.builtin.copy:
+    src: ./templates/cert-manager-values.yaml
+    dest: /tmp/cert-manager-values.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  run_once: true
+
+- name: install cert-manager (2/2)
+  ansible.builtin.shell: |
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo add jetstack https://charts.jetstack.io
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo update
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.12.0 -f /tmp/cert-manager-values.yaml
+  run_once: true
+
+- name: install piraeus-linstor (1/5)
+  ansible.builtin.copy:
+    src: ./templates/piraeus-linstor-cluster.yaml
+    dest: /tmp/piraeus-linstor-cluster.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  run_once: true
+
+- name: install piraeus-linstor (2/5)
+  ansible.builtin.copy:
+    src: ./templates/piraeus-linstor.yaml
+    dest: /tmp/piraeus-linstor.yaml
+    owner: root
+    group: root
+    mode: '0644'
+  run_once: true
+
+- name: install piraeus-linstor (3/5)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml apply --server-side -k "https://github.com/piraeusdatastore/piraeus-operator//config/default?ref=v2"
+  run_once: true
+
+- name: pause for 1 minutes to piraeus-linstor completely up
+  ansible.builtin.pause:
+    minutes: 1
+    prompt: "Pause for 1 minutes to piraeus-linstor completely up"
+
+
+- name: install piraeus-linstor (4/5)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml apply -n piraeus-datastore -f /tmp/piraeus-linstor-cluster.yaml
+  run_once: true
+
+- name: install piraeus-linstor (5/5)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml apply -n piraeus-datastore -f /tmp/piraeus-linstor.yaml
+  run_once: true

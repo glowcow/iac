@@ -1,0 +1,29 @@
+- name: install traefik ingress (1/2)
+  ansible.builtin.template:
+    src: ./templates/helm-traefik-values.j2
+    dest: /tmp/helm-traefik-values.yaml
+    owner: root
+    group: root
+    mode: "0644"
+  run_once: true
+
+- name: install traefik ingress (2/2)
+  ansible.builtin.shell: |
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo add traefik https://traefik.github.io/charts
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml repo update
+    helm --kubeconfig /etc/rancher/rke2/rke2.yaml upgrade -i traefik-ingress -n ingress-system --create-namespace --wait --atomic --version 20.8.0 traefik/traefik -f /tmp/helm-traefik-values.yaml
+  run_once: true
+
+- name: apply traefik dashboard ingress (1/2)
+  ansible.builtin.template:
+    src: ./templates/traefik-dashboard-ingress.j2
+    dest: /tmp/traefik-dashboard-ingress.yml
+    owner: root
+    group: root
+    mode: "0644"
+  run_once: true
+
+- name: apply traefik dashboard ingress (2/2)
+  ansible.builtin.shell: |
+    /var/lib/rancher/rke2/bin/kubectl --kubeconfig=/etc/rancher/rke2/rke2.yaml apply -f /tmp/traefik-dashboard-ingress.yml
+  run_once: true

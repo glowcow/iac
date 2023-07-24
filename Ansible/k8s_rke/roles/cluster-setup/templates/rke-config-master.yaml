@@ -1,0 +1,14 @@
+write-kubeconfig-mode: "0600"
+node-taint:
+  - node-role.kubernetes.io/control-plane:NoSchedule
+disable: rke2-ingress-nginx
+control-plane-resource-requests:
+  - kube-apiserver-cpu=512m
+  - kube-apiserver-memory=512M
+  - kube-scheduler-cpu=128m
+  - kube-scheduler-memory=128M
+  - kube-controller-manager-cpu=256m
+  - kube-controller-manager-memory=256M
+  - kube-proxy-cpu=64m
+  - kube-proxy-memory=64M
+  - etcd-cpu=256m
