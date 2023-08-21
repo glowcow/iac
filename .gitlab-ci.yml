@@ -1,5 +1,5 @@
 variables:
-  TF_IMG: glowcow/terraform:1.5.0
+  TF_IMG: glowcow/terraform:1.5.5
   ANS_IMG: glowcow/ansible:2.15.0
 
 stages:

@@ -8,7 +8,7 @@ spec:
       serviceAccountName: {{ .Release.Name }}-sa
       containers:
       - name: terraform
-        image: hashicorp/terraform:1.5.1
+        image: hashicorp/terraform:1.5.5
         command: ["/bin/sh", "-c"]
         args:
         - terraform init && terraform apply -auto-approve
