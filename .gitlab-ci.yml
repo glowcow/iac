@@ -28,10 +28,10 @@ create infrastructure:
     - terraform init
     - terraform apply -auto-approve
   cache:
-    key: "$CI_PROJECT_TITLE"
+    key: "$CI_PROJECT_ID"
     paths:
       - Terraform/$TF/.terraform/
-      - Terraform/$TF.terraform.lock.hcl
+      - Terraform/$TF/.terraform.lock.hcl
       - Ansible/inventory.ini
     policy: push
 
@@ -55,7 +55,11 @@ configure infrastructure:
     - job: create infrastructure
       artifacts: true
   cache:
-    key: "$CI_PROJECT_TITLE"
+    key: "$CI_PROJECT_ID"
+    paths:
+      - Terraform/$TF/.terraform/
+      - Terraform/$TF/.terraform.lock.hcl
+      - Ansible/inventory.ini
     policy: pull
 
 destroy infrastructure:
@@ -80,5 +84,9 @@ destroy infrastructure:
     - terraform init
     - terraform destroy -auto-approve
   cache:
-    key: "$CI_PROJECT_TITLE"
+    key: "$CI_PROJECT_ID"
+    paths:
+      - Terraform/$TF/.terraform/
+      - Terraform/$TF/.terraform.lock.hcl
+      - Ansible/inventory.ini
     policy: pull
