@@ -3,7 +3,7 @@ default:
     key: "$CI_PROJECT_TITLE"
     paths:
       - Terraform/$TF/.terraform/
-      - Terraform/$TF/S.terraform.lock.hcl
+      - Terraform/$TF.terraform.lock.hcl
       - Ansible/inventory.ini
       - Ansible/$ANS/*.log
 
@@ -36,6 +36,8 @@ create infrastructure:
   script:
     - terraform init
     - terraform apply -auto-approve
+  cache:
+    policy: push
 
 configure infrastructure:
   stage: infra_config
@@ -56,6 +58,8 @@ configure infrastructure:
   needs:
     - job: create infrastructure
       artifacts: true
+  cache:
+    policy: pull
 
 destroy infrastructure:
   stage: infra_destroy
@@ -78,3 +82,5 @@ destroy infrastructure:
   script:
     - terraform init
     - terraform destroy -auto-approve
+  cache:
+    policy: pull
