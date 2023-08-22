@@ -2,8 +2,8 @@ default:
   cache:
     key: "$CI_PROJECT_TITLE"
     paths:
-      - .terraform/
-      - .terraform.lock.hcl
+      - Terraform/$TF/.terraform/
+      - Terraform/$TF/S.terraform.lock.hcl
       - Ansible/inventory.ini
       - Ansible/$ANS/*.log
 
