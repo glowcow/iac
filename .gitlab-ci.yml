@@ -28,7 +28,7 @@ create infrastructure:
     - terraform init
     - terraform apply -auto-approve
   cache:
-    key: "$CI_PROJECT_ID"
+    key: "$CI_PROJECT_NAME"
     paths:
       - Terraform/$TF/.terraform/
       - Terraform/$TF/.terraform.lock.hcl
@@ -55,7 +55,7 @@ configure infrastructure:
     - job: create infrastructure
       artifacts: true
   cache:
-    key: "$CI_PROJECT_ID"
+    key: "$CI_PROJECT_NAME"
     paths:
       - Terraform/$TF/.terraform/
       - Terraform/$TF/.terraform.lock.hcl
@@ -84,7 +84,7 @@ destroy infrastructure:
     - terraform init
     - terraform destroy -auto-approve
   cache:
-    key: "$CI_PROJECT_ID"
+    key: "$CI_PROJECT_NAME"
     paths:
       - Terraform/$TF/.terraform/
       - Terraform/$TF/.terraform.lock.hcl
