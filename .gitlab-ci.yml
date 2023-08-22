@@ -1,3 +1,12 @@
+default:
+  cache:
+    key: "$CI_PROJECT_TITLE"
+    paths:
+      - .terraform/
+      - .terraform.lock.hcl
+      - Ansible/inventory.ini
+      - Ansible/$ANS/*.log
+
 variables:
   TF_IMG: glowcow/terraform:1.5.5
   ANS_IMG: glowcow/ansible:2.15.0
@@ -27,10 +36,6 @@ create infrastructure:
   script:
     - terraform init
     - terraform apply -auto-approve
-  cache:
-    key: "$CI_PROJECT_NAME"
-    paths:
-      - Ansible/inventory.ini
 
 configure infrastructure:
   stage: infra_config
@@ -51,10 +56,6 @@ configure infrastructure:
   needs:
     - job: create infrastructure
       artifacts: true
-  cache:
-    key: "$CI_PROJECT_NAME"
-    paths:
-      - Ansible/$ANS/*.log
 
 destroy infrastructure:
   stage: infra_destroy
