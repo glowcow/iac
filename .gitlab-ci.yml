@@ -27,8 +27,8 @@ create infrastructure:
   script:
     - terraform init
     - terraform apply -auto-approve
-  artifacts:
-    name: "$CI_JOB_NAME"
+  cache:
+    key: "$CI_PROJECT_NAME"
     paths:
       - Ansible/inventory.ini
 
@@ -51,8 +51,8 @@ configure infrastructure:
   needs:
     - job: create infrastructure
       artifacts: true
-  artifacts:
-    name: "$CI_JOB_NAME"
+  cache:
+    key: "$CI_PROJECT_NAME"
     paths:
       - Ansible/$ANS/*.log
 
