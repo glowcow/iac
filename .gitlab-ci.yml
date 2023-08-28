@@ -1,6 +1,6 @@
 variables:
   TF_IMG: glowcow/terraform:1.5.5
-  ANS_IMG: glowcow/ansible:2.15.0
+  ANS_IMG: glowcow/ansible:2.15.3
 
 stages:
   - infra_create
