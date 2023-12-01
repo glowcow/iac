@@ -29,6 +29,7 @@ To create a new infrastructure:
 | `do_k8s` | Digital Ocean managed kuberntes cluster |
 | `do_linux` | Basic Digital Ocean droplet for tests |
 | `openstack_linux` | Basic openstack VM for tests |
+| `openstack_chr` | OpenStack MikroTik Cloud Hosted Router  |
 
 ### For run Terraform and Ansible, enter three mandatory variable:
 
