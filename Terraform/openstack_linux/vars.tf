@@ -52,6 +52,7 @@ variable "os_api" {
 variable "os_domain_name" {
   description = "OpenStack provider account ID"
   type = string
+  default = "215780"
 }
 variable "os_project_id" {
   description = "OpenStack provider project ID"
@@ -60,6 +61,7 @@ variable "os_project_id" {
 variable "os_user_name" {
   description = "OpenStack provider username"
   type = string
+  default = "tf_user"
 }
 variable "os_user_password" {
   description = "OpenStack provider password"
