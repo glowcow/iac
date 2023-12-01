@@ -23,6 +23,7 @@ To create a new infrastructure:
 | ------------- |:-------------:|
 | `aws_chr` | AWS MikroTik Cloud Hosted Router |
 | `aws_k8s_sm` | AWS infrastructure for setup self managed kubernetes cluster |
+| `aws_k8s_rke` | AWS infrastructure for setup self managed RKE2 kubernetes cluster |
 | `aws_linux` | Basic AWS EC2 for tests |
 | `do_chr` | Digital Ocean MikroTik Cloud Hosted Router |
 | `do_k8s` | Digital Ocean managed kuberntes cluster |
@@ -38,4 +39,5 @@ To create a new infrastructure:
 | **Ansible Playbook**  | **Description** | **Available Tags** |
 | ------------- |:-------------:|:-------------:|
 | `k8s_sm` | Setup self managed kubernetes cluster | *cluster-setup, master-restore, node-add, node-prepare* |
+| `k8s_rke` | Setup self managed kubernetes cluster | *all, cluster-setup, node-prepare, post-tasks* |
 | `linux` | Various Linux packages and tools | *docker, gitlab-runner, npm* |
