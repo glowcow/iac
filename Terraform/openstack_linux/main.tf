@@ -17,8 +17,8 @@ resource "random_string" "random_name_server" {
 
 resource "openstack_compute_flavor_v2" "flavor_server" {
   name      = "${var.region}_server-${random_string.random_name_server.result}"
-  ram       = "1024"
-  vcpus     = "1"
+  ram       = var.mem_size
+  vcpus     = var.cpu_count
   disk      = "0"
   is_public = "false"
 }
