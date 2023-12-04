@@ -37,7 +37,7 @@ resource "openstack_compute_flavor_v2" "flavor_server" {
   ram       = var.mem_size
   vcpus     = var.cpu_count
   disk      = "0"
-  is_public = "true"
+  is_public = "false"
 }
 
 resource "openstack_blockstorage_volume_v3" "volume_server" {
