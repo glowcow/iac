@@ -8,7 +8,7 @@ resource "null_resource" "download_and_prepare_image" {
   provisioner "local-exec" {
     command = <<EOT
       minc alias set aws https://s3.amazonaws.com $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
-      minc cp aws/${S3_BUCKET_NAME}/chr/chr-${var.chr_ver}.img chr-${var.chr_ver}.img
+      minc cp aws/$S3_BUCKET_NAME/chr/chr-${var.chr_ver}.img chr-${var.chr_ver}.img
       EOT
   }
 }
