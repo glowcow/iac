@@ -4,6 +4,11 @@ variable "public_key" {
   default     = "~/.ssh/id_ed25519.pub"
   sensitive   = true
 }
+variable "gd_sso" {
+  description = "GoDaddy API key & secret"
+  type        = string
+  sensitive   = true
+}
 variable "region" {
   description = "OpenStack provider region"
   type = string

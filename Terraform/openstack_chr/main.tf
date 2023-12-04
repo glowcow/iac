@@ -66,6 +66,15 @@ resource "openstack_compute_instance_v2" "server_tf" {
     destination_type = "volume"
     boot_index       = 0
   }
+  provisioner "local-exec" {
+    command = <<EOT
+      curl -X PUT "https://api.godaddy.com/v1/domains/glowcow.xyz/records/A/*.chrr" \
+        -H "accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: sso-key ${var.gd_sso}" \
+        -d '[{"data":"${self.server_floating_ip}","port":1,"priority":1,"protocol":"string","service":"string","ttl":600,"weight":1}]'
+      EOT
+  }
   vendor_options {
     ignore_resize_confirmation = true
   }
