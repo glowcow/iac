@@ -72,7 +72,7 @@ resource "openstack_compute_instance_v2" "server_tf" {
         -H "accept: application/json" \
         -H "Content-Type: application/json" \
         -H "Authorization: sso-key ${var.gd_sso}" \
-        -d '[{"data":"${self.server_floating_ip}","port":1,"priority":1,"protocol":"string","service":"string","ttl":600,"weight":1}]'
+        -d '[{"data":"${openstack_networking_floatingip_v2.fip_tf.address}","port":1,"priority":1,"protocol":"string","service":"string","ttl":600,"weight":1}]'
       EOT
   }
   vendor_options {
