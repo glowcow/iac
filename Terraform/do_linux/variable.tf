@@ -20,7 +20,7 @@ variable "drplt_size" {
 variable "drplt_image" {
   description = "images slug of the DO droplet"
   type        = string
-  default     = "ubuntu-20-04-x64"
+  default     = "ubuntu-24-04-x64"
 }
 variable "def_user" {
   description = "Default username of Ubuntu 20.04"
